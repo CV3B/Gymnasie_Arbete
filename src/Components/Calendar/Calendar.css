@@ -105,4 +105,10 @@ body {
     border-radius: 9999px;
     background-color: var(--grey-800);
   }
-  
+
+  .test {
+    color: red;
+  }
+  .test2 {
+    color: #006eff;
+  }
