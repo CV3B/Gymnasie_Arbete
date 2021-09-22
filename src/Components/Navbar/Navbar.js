@@ -50,25 +50,22 @@ function Navbar() {
 		<Box>
 			<TopLogo />
     	<nav >
-				{/* <Slide in={scrolled} style={{ transformOrigin: '0 0 0' }}{...(scrolled ? { timeout: 1000 } : { timeout: 500 })}> */}
 				<div className={navbarClasses.join(" ") } >
 					<Grow in={scrolled} style={{ transformOrigin: '0 0 0' }}{...(scrolled ? { timeout: 1000 } : { timeout: 500 })}>
 						<img 
 							src={tempLogo}
 							className="logo-img"
-							// style={{ display: scrolled ? "block" : "none" }}
 							alt="temp-logo"
 						/>
 					</Grow>
-					{/* <Stack > */}
-					{/* <Grid container className="buttons" spacing={3} justifyContent="center" alignItems="center"> */}
-						<Grid item><Button variant="text" color="inherit">BUTTON</Button></Grid>
-						<Grid item><Button variant="text" color="inherit">BUTTON</Button></Grid>
-						<Grid item><Button variant="text" color="inherit">BUTTON</Button></Grid>
-					{/* </Grid> */}
-					{/* </Stack> */}
+					<Slide direction="left" in={true} timeout={400}>
+					<div className="btns">
+						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
+					</div>
+					</Slide>
 				</div>
-				{/* </Slide> */}
     	</nav>
 		</Box>
   )
