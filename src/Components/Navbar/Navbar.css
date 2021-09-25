@@ -27,7 +27,7 @@
   width: 100%;
   min-height: 6vh;
   display: flex;
-  /* transition: all .4s ease-in; */
+  /* transition: height .4s ease-in; */
   
   
 }

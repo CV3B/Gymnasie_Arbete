@@ -6,6 +6,14 @@
   width: 100%;
 }
 
+.rectangle {
+  height: 50px;
+  width: 100px;
+  background-color: #555;
+}
+
 .temp {
   height: 400px;
+  width: 100%;
+  object-fit: cover;
 }

@@ -58,13 +58,11 @@ function Navbar() {
 							alt="temp-logo"
 						/>
 					</Grow>
-					<Slide direction="left" in={true} timeout={400}>
 					<div className="btns">
+						<Button id="nav-button" variant={scrolled ? "contained" : "text"} color="inherit">BUTTON</Button>
 						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant="contained" color="inherit">BUTTON</Button>
 					</div>
-					</Slide>
 				</div>
     	</nav>
 		</Box>
