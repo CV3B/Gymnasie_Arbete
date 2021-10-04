@@ -60,8 +60,8 @@ function Navbar() {
 					</Grow>
 					<div className="btns">
 						<Button id="nav-button" variant={scrolled ? "contained" : "text"} color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant="text" color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant="contained" color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant={scrolled ? "contained" : "text"} color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant={scrolled ? "contained" : "text"} color="inherit">BUTTON</Button>
 					</div>
 				</div>
     	</nav>

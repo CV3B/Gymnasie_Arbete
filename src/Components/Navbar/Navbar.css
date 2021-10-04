@@ -28,7 +28,7 @@
   min-height: 6vh;
   display: flex;
   /* transition: height .4s ease-in; */
-  
+  z-index: 10;
   
 }
 
