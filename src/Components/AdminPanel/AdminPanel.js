@@ -27,7 +27,7 @@ function AdminPanel() {
   
   useEffect(() => {
     if(loading) return;
-    if(!isAdmin) return history.replace("/dashboard");
+    if(!isAdmin) return history.replace("/dashboard"); //! SKICKAR TILLBAKA ÄVEN OM ROLE = ADMIN
 
     fetchUserData()
   }, [isAdmin, loading]);

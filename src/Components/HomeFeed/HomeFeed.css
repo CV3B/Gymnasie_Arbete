@@ -65,3 +65,15 @@
   /* -ms-transform: translateY(-50%); */
   /* transform: translateY(-50%); */
 }
+
+
+.btn-icon {
+  font-size: 800px;
+}
+
+.paper-bg {
+  background-color: #1e88e5;
+  height: 150px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}

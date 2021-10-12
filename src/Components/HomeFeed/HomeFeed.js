@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
 
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
@@ -42,23 +43,41 @@ function HomeFeed() {
       </Stack>
       <Stack direction="row">
         <Grid item xs={12}>
-          <Paper elevation={6} sx={{height: 150, marginTop: 2, marginBottom: 2, backgroundColor: "#1e88e5"}}  >
-            <div className="some-name">
-              {/* <Stack > */}
-                <IconButton color="inherit">
-                  <LocationOnIcon />
-                </IconButton>
-                
-                <IconButton sx={{ color: "white" }}>
-                  <LocalPhoneIcon />
-                </IconButton>
-
-                <IconButton color="secondary">
-                  <EmailIcon />
-                </IconButton>
-              {/* </Stack>   */}
+          {/* <Paper elevation={6} sx={{height: 150, marginTop: 2, marginBottom: 2, backgroundColor: "#1e88e5"}}  > */}
+          <div className="paper-bg">
+              <Stack
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+              > 
+              <Grid container direction="row" justifyContent="center" alignItems="center" spacing={4}>
+                <Grid item>             
+                  <IconButton sx={{ color: "white" }} >
+                    <LocationOnIcon fontSize="large" />
+                  </IconButton>
+                  <Typography variant="h6" sx={{ color: "white" }}>ADRESS</Typography>
+                  <Typography ariant="subtitle1" sx={{ color: "white" }}>GATENAMN 9</Typography>
+                </Grid>
+                <Divider orientation="vertical" />
+                <Grid item>
+                  <IconButton sx={{ color: "white" }} >
+                    <LocalPhoneIcon fontSize="large" />
+                  </IconButton>
+                  <Typography variant="h6" sx={{ color: "white" }}>TELEFON</Typography>
+                  <Typography ariant="subtitle1" sx={{ color: "white" }}>0704123456</Typography>
+                </Grid>
+                <Grid item> 
+                  <IconButton sx={{ color: "white" }} >
+                    <EmailIcon fontSize="large" />
+                  </IconButton>
+                  <Typography variant="h6" sx={{ color: "white" }}>EMAIL</Typography>
+                  <Typography ariant="subtitle1" sx={{ color: "white" }}>info@contact.com</Typography>
+                </Grid>
+              </Grid>
+              </Stack>
             </div>
-          </Paper>
+          {/* </Paper> */}
         </Grid>
       </Stack>
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={0.5}>

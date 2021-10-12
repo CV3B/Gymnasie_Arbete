@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { auth, db, logout } from "../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
+import Alert from '@mui/material/Alert';
 
 function Dashboard() {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const history = useHistory();
+  let showUnauthorizedAlert = false;
 
   const fetchUserData = async () => {
     try {
@@ -27,13 +29,24 @@ function Dashboard() {
   const namnFunc = () => {
     if (isAdmin) {
       history.replace("/dashboard/admin_panel")
-    }
+    } 
+    
+    // else {
+    //   showUnauthorizedAlert = true;
+    //   console.log(showUnauthorizedAlert);
+    //   setTimeout(function(){ showUnauthorizedAlert = false; }, 5000);
+    // }
+  }
+
+  const errorAlert = () => {
+    return showUnauthorizedAlert ? (<Alert variant="filled" severity="error">Du har inte tillgång till den här komponenten!</Alert>) : null
   }
 
   useEffect(() => {
     if (loading) return;
-    if (!user) return history.replace("/");
+    if (!user) return history.replace("/login");
     
+    // errorAlert()
     fetchUserData();
   }, [user, loading]); //? userRole
 
@@ -48,7 +61,7 @@ function Dashboard() {
         <button className="dashboard__btn" onClick={logout}>
           Logout
         </button>
-        <button onClick={() => console.log(isAdmin)}>DEBUG</button>
+        <button onClick={() => console.log(showUnauthorizedAlert)}>DEBUG</button>
         <button onClick={namnFunc}>Admin</button>
       </div>
     </div>

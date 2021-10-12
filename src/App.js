@@ -46,17 +46,18 @@ function App() {
     <div className="App">
       <ThemeProvider theme={theme}>
         {/* <Calendar /> */}
-        <Navbar />
-        <HomeFeed />
-        <Footer />
-        {/* <Router>
-        <Switch>
-          <Route exact path="/" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route exact path="/dashboard/admin_panel" component={AdminPanel} />
-        </Switch>
-      </Router> */}
+        {/* <HomeFeed /> */}
+        <Router>
+          <Navbar />
+            <Switch>
+              <Route exact path="/" component={HomeFeed} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />
+              <Route exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/dashboard/admin_panel" component={AdminPanel} />
+            </Switch>
+          <Footer />
+        </Router>
       </ThemeProvider>
     </div>
   );
