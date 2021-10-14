@@ -50,13 +50,18 @@ function App() {
         <Router>
           <Navbar />
             <Switch>
-              <Route exact path="/" component={HomeFeed} />
+              <Route exact path="/" >
+                <HomeFeed/>
+                <Footer />
+              </Route>
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
-              <Route exact path="/dashboard" component={Dashboard} />
+              <Route exact path="/dashboard" >
+                <Dashboard />
+                <Calendar />
+              </Route>
               <Route exact path="/dashboard/admin_panel" component={AdminPanel} />
             </Switch>
-          <Footer />
         </Router>
       </ThemeProvider>
     </div>

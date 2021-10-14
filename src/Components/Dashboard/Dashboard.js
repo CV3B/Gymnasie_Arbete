@@ -63,6 +63,7 @@ function Dashboard() {
         </button>
         <button onClick={() => console.log(showUnauthorizedAlert)}>DEBUG</button>
         <button onClick={namnFunc}>Admin</button>
+        
       </div>
     </div>
   );

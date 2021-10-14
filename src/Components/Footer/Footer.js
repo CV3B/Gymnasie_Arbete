@@ -9,7 +9,7 @@ import './Footer.css';
 function Footer(){
 
   return(
-    <Container>
+    <Grid container alignItems="flex-end">
           <Grid className="footer" container spacing={3} direction="row" justifyContent="center" alignItems="center">
             <Grid item xs={3}>
                 <h4 as='a'>Sitemap</h4>
@@ -32,7 +32,7 @@ function Footer(){
               </p>
             </Grid>
           </Grid>
-      </Container>
+      </Grid>
   )
 }
 

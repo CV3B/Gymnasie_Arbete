@@ -7,7 +7,7 @@ function AdminPanel() {
 
   const [user, loading, error] = useAuthState(auth);
   const history = useHistory();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const fetchUserData = async () => {
     try {
@@ -27,7 +27,7 @@ function AdminPanel() {
   
   useEffect(() => {
     if(loading) return;
-    if(!isAdmin) return history.replace("/dashboard"); //! SKICKAR TILLBAKA ÄVEN OM ROLE = ADMIN
+    if(!isAdmin) return history.replace("/dashboard");
 
     fetchUserData()
   }, [isAdmin, loading]);

@@ -2,6 +2,12 @@ import React, {useState} from 'react';
 import dayjs from "dayjs";
 import "./Calendar.css";
 
+import Card from '@mui/material/Card';
+import { Button, CardActionArea } from '@mui/material';
+
+import Booking, { OpenBooking } from './Booking/Booking';
+
+
 
 const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
@@ -47,10 +53,18 @@ function Calendar() {
 
     return(
       days.map((day) => (
-          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${addValidDays(day.date) ? "test2": "test"} `}>
+          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
             <span>{day.dayOfMonth}</span>
+            {/* <Booking day={day.date} /> */}
+            {isValidDay(day.date) &&
+              // <Button id={day.date} onClick={(e) => console.log(typeof e.target.id)}>
+              //   BOKA
+              // </Button>
+              <OpenBooking date={day.date} />
+            }
             {/* <button id={day.date} onClick={(e) => console.log(day)} /> */}
             {/* <button id={day.toString()} onClick={(e) => console.log(day)} /> */}
+            
           </li>
       ))
     )
@@ -163,7 +177,7 @@ function Calendar() {
                 {selectedMonth}
             </div>
 
-            <button onClick={(e) => addValidDays("2021-08-30")}>DEBUG</button>
+            <button onClick={(e) => isValidDay("2021-08-30")}>DEBUG</button>
 
             <section className="calendar-month-header-selectors">
               <span id="previous-month-selector" onClick={() => setPrevMonth()}>B</span>
@@ -186,7 +200,7 @@ function Calendar() {
         </div>
 )};
 
-function addValidDays(currDate) {
+export function isValidDay(currDate) {
 
   let arrValidDays = [];
 
@@ -199,47 +213,28 @@ function addValidDays(currDate) {
     for (let i=0; i < dateDiff + 1; i++) {
       arrValidDays.push(dayjs(validDays[numDays].dateFrom).add(i, "day"))
     }
-
-  //   if ("2021-08-29" === currDate) {
-  //     console.log("PLS")
-  //     return true;
-  //   } else {
-  //     console.log("nehe")
-  //     return false;
-  // }
-  
   }
-  // const a = arrValidDays.every(day => day.format("YYYY-MM-DD") === currDate)
-  // console.log(a)
 
   const getValidDays = arrValidDays.some(day => day.format("YYYY-MM-DD") === currDate)
   console.log(getValidDays)
-  return getValidDays
 
-  // arrValidDays.forEach(arrDay => {
-  //   console.log(arrDay.format("YYYY-MM-DD"))
-  //   if (arrDay.format("YYYY-MM-DD") === currDate) {
-  //     console.log("treuuee")
-  //     return true;
-  //     // console.log(console.log(arrDay.format("YYYY-MM-DD")))
-  //     // console.log(console.log(currDate))
-  //   } else {
-  //     console.log("falsse")
-  //     // return true;
-  //     return true;
-  //   }
-  // });
+  return getValidDays
 }
+
+
+
 
 const validDays = {
   1: {
-    dateFrom: "2021-09-01",
-    dateTo: "2021-09-03",
+    dateFrom: "2021-10-13",
+    dateTo: "2021-10-16",
     numOfSpots: 10,
 
   }
 }
 
-// console.log(addValidDays("2021-09-01"))
+
+
+// export isValidDay();
 
 export default Calendar;
