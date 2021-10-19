@@ -106,7 +106,7 @@ export function OpenBooking(props) {
                 <Typography>{time} - {availableTimes[time]}</Typography>
               )) } */}
 
-              <BookingStepper availableTimes={availableTimes} />
+              <BookingStepper availableTimes={availableTimes} date={props.date}/>
             </Typography>
           </Box>
         </Fade>
@@ -158,20 +158,45 @@ function RadioButtonsGroup(props) {
   );
 }
 
-function PersonalInformation() {
+function PersonalInformation(props) {
   // const [personalInfo, setPersonalInfo] = useState({})
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [epost, setEpost] = useState("")
-  const [mobileNummer, setMobileNumber] = useState("")
+  const [mobileNumber, setMobileNumber] = useState("")
   const [extraInfo, setExtraInfo] = useState("")
+  const [user, loading, error] = useAuthState(auth);
 
-  // const handleChange = (e, {firstname, value}) => {
-  //   setPersonalInfo({[firstname]: value})
-  // }
+  const sendPersonalInformation = async () => {
+    try {
+      await db.collection("booked-dates").add({
+       firstName: firstName,
+       lastName: lastName,
+       email: epost,
+       mobileNumber: mobileNumber,
+       extraInfo: extraInfo,
+       date: props.date,  
+    });
+      console.log("SEND DATA LOOL")
+    } catch (err) {
+      console.error(err);
+      // alert("An error occured while fetching user data");
+    }
+  };
+
+    useEffect(() => {
+      if (loading) return;
+      if (props.isSubmited) {
+        console.log("aaaaaaa")
+      }
+      // sendPersonalInformation();
+      console.log(props.isSubmited)
+      
+      // fetchAvailableDatesData();
+    }, [props.isSubmited, loading]);
   return (
     <>
-      {/* <Button onClick={() => console.log()}>PERSONALINFO</Button> */}
+      <Button onClick={() => console.log(props.isSubmited)}>PERSONALINFO</Button>
       <TextField
         id="firstname"
         label="Förnamn"
@@ -251,12 +276,14 @@ function getSteps() {
   return ['Tider', 'Din information'];
 }
 
-function getStepContent(props, stepIndex) {
+function getStepContent(props, stepIndex, isSubmited) {
+  console.log(isSubmited)
   switch (stepIndex) {
     case 0:
       return (<RadioButtonsGroup availableTimes={props.availableTimes} />)
     case 1:
-      return (<PersonalInformation />);
+      return console.log("loool");
+      // return (<PersonalInformation isSubmited={isSubmited} date={props.date} />);
     default:
       return 'Unknown stepIndex';
   }
@@ -264,6 +291,7 @@ function getStepContent(props, stepIndex) {
 
 function BookingStepper(props) {
 const [activeStep, setActiveStep] = useState(0);
+const [isSubmited, setSubmit] = useState(false)
 const steps = getSteps();
 const classes = useStyles();
 
@@ -280,9 +308,8 @@ const handleReset = () => {
   setActiveStep(0);
 };
 
-const temp = (e) => {
-  console.log(e.target)
-  handleNext()
+const handleSubmit = () => {
+  setSubmit(true);
 }
 
 return (
@@ -298,11 +325,13 @@ return (
       {activeStep === steps.length ? (
         <div>
           <Typography className={classes.instructions}>All steps completed</Typography>
+          <PersonalInformation isSubmited={isSubmited} date={props.date} />
           <Button onClick={handleReset}>Reset</Button>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
         </div>
       ) : (
         <div>
-          <Typography className={classes.instructions}>{getStepContent(props, activeStep, props.items, props.onRemoveItem)}</Typography>
+          <Typography className={classes.instructions}>{getStepContent(props, activeStep, isSubmited, props.date)}</Typography>
           <div>
             <Button
               disabled={activeStep === 0}
@@ -311,8 +340,9 @@ return (
             >
               Back
             </Button>
-            <Button variant="contained" color="primary" onClick={temp} >
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+            <Button variant="contained" color="primary" onClick={handleNext} >
+              {/* {activeStep === steps.length - 1 ? 'Finish' : 'Next'} */}
+              Next
             </Button>
           </div>
         </div>
