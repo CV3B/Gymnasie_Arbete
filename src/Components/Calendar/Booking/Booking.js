@@ -159,14 +159,19 @@ function RadioButtonsGroup(props) {
 }
 
 function PersonalInformation() {
-  const [personalInfo, setPersonalInfo] = useState({})
+  // const [personalInfo, setPersonalInfo] = useState({})
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [epost, setEpost] = useState("")
+  const [mobileNummer, setMobileNumber] = useState("")
+  const [extraInfo, setExtraInfo] = useState("")
 
-  const handleChange = (e, {firstname, value}) => {
-    setPersonalInfo({[firstname]: value})
-  }
+  // const handleChange = (e, {firstname, value}) => {
+  //   setPersonalInfo({[firstname]: value})
+  // }
   return (
     <>
-      <Button onClick={() => console.log(personalInfo)}>PERSONALINFO</Button>
+      {/* <Button onClick={() => console.log()}>PERSONALINFO</Button> */}
       <TextField
         id="firstname"
         label="Förnamn"
@@ -176,7 +181,7 @@ function PersonalInformation() {
         variant="standard"
         size="small"
         sx={{ margin: 2}}
-        onChange={handleChange}
+        onChange={e => setFirstName(e.target.value)}
       />
       <TextField
         id="lastname"
@@ -187,10 +192,10 @@ function PersonalInformation() {
         variant="standard"
         size="small"
         sx={{ margin: 2}}
-        onChange={handleChange}
+        onChange={e => setLastName(e.target.value)}
       />
       <TextField
-        id="mobile-number"
+        id="epost"
         label="Epost"
         InputLabelProps={{
           shrink: true,
@@ -198,7 +203,7 @@ function PersonalInformation() {
         variant="standard"
         size="small"
         sx={{ margin: 2}}
-        onChange={handleChange}
+        onChange={e => setEpost(e.target.value)}
       />
       <TextField
         id="mobile-number"
@@ -209,10 +214,10 @@ function PersonalInformation() {
         variant="standard"
         size="small"
         sx={{ margin: 2}}
-        onChange={handleChange}
+        onChange={e => setMobileNumber(e.target.value)}
       />
       <TextField
-        id="mobile-number"
+        id="extra-info"
         label="Extra information"
         multiline
         maxRows={4}
@@ -222,7 +227,7 @@ function PersonalInformation() {
         variant="standard"
         size="small"
         sx={{ margin: 2}}
-        onChange={handleChange}
+        onChange={e => setExtraInfo(e.target.value)}
       />
     </>
   )
@@ -275,6 +280,11 @@ const handleReset = () => {
   setActiveStep(0);
 };
 
+const temp = (e) => {
+  console.log(e.target)
+  handleNext()
+}
+
 return (
   <div className={classes.root}>
     <Stepper activeStep={activeStep} alternativeLabel>
@@ -301,7 +311,7 @@ return (
             >
               Back
             </Button>
-            <Button variant="contained" color="primary" onClick={handleNext}>
+            <Button variant="contained" color="primary" onClick={temp} >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </div>
