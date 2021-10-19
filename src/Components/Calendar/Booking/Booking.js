@@ -196,7 +196,7 @@ function PersonalInformation(props) {
     }, [props.isSubmited, loading]);
   return (
     <>
-      <Button onClick={() => console.log(props.isSubmited)}>PERSONALINFO</Button>
+      {/* <Button onClick={() => console.log(props.isSubmited)}>PERSONALINFO</Button> */}
       <TextField
         id="firstname"
         label="Förnamn"
@@ -282,8 +282,7 @@ function getStepContent(props, stepIndex, isSubmited) {
     case 0:
       return (<RadioButtonsGroup availableTimes={props.availableTimes} />)
     case 1:
-      return console.log("loool");
-      // return (<PersonalInformation isSubmited={isSubmited} date={props.date} />);
+      return (<PersonalInformation isSubmited={isSubmited} date={props.date} />);
     default:
       return 'Unknown stepIndex';
   }
@@ -312,6 +311,11 @@ const handleSubmit = () => {
   setSubmit(true);
 }
 
+const handleSubnNxt = () => {
+  handleNext();
+  handleSubmit();
+}
+
 return (
   <div className={classes.root}>
     <Stepper activeStep={activeStep} alternativeLabel>
@@ -325,9 +329,9 @@ return (
       {activeStep === steps.length ? (
         <div>
           <Typography className={classes.instructions}>All steps completed</Typography>
-          <PersonalInformation isSubmited={isSubmited} date={props.date} />
-          <Button onClick={handleReset}>Reset</Button>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
+          {/* <PersonalInformation isSubmited={isSubmited} date={props.date} /> */}
+          {/* <Button onClick={handleReset}>Reset</Button> */}
+          {/* <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button> */}
         </div>
       ) : (
         <div>
@@ -340,10 +344,14 @@ return (
             >
               Back
             </Button>
-            <Button variant="contained" color="primary" onClick={handleNext} >
+            {activeStep === steps.length - 2 ? (<Button variant="contained" color="primary" onClick={handleNext} >Next</Button>) : null }
               {/* {activeStep === steps.length - 1 ? 'Finish' : 'Next'} */}
-              Next
-            </Button>
+              {/* Next */}
+            
+            {activeStep === steps.length - 1 ? (
+            <Button variant="contained" color="primary" onClick={handleSubnNxt} >
+              Submit
+            </Button>) : null}
           </div>
         </div>
       )}
