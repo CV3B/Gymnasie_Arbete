@@ -21,22 +21,96 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 
 import Tooltip from '@mui/material/Tooltip';
-
-
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
+import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import DateRangePicker from '@mui/lab/DateRangePicker';
+import AdapterDateFns from '@mui/lab/AdapterDayjs';
 import { makeStyles } from '@mui/styles';
 
 import { auth, db, logout } from "../../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-
+import dayjs from "dayjs";
 
 import { isValidDay } from '../Calendar';
 
 function Booking(props) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const sendAvailableDatesInformation = async () => {
+    try {
+      // let arrValidDays = [];
+      const date1 = dayjs(props.value[0]).format("YYYY-MM-DD")
+      const date2 = dayjs(props.value[1]).format("YYYY-MM-DD")
+      const dateDiff = date2.diff(date1, "day")
+      
+      for (let i=0; i < dateDiff + 1; i++) {
+        // arrValidDays.push()
+
+        await addDoc(collection(db, "available-dates"), {
+          date: dayjs(date2).add(i, "day").format("YYYY-MM-DD"),
+          "available-times": {
+            "12:00": 10,
+            "12:10": 9,
+            "12:20": 8,
+            "12:30": 7,
+          }
+        });
+      }
+      
+    } catch (err) {
+      console.error(err);
+      // alert("An error occured while fetching user data");
+    }
+  };
+
+  const handleApply = () => {
+    sendAvailableDatesInformation()
+  }
 
   return (
-    <AddValidDays days={props.day} />
+    <div>
+      <Button onClick={handleOpen}>Lägg till dagar(bättre namn)</Button>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Button onClick={()=> console.log(dayjs(props.value[0]).format("YYYY-MM-DD"), dayjs(props.value[1]).format("YYYY-MM-DD"))}>aaaaaaa</Button>
+          {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography> */}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DateRangePicker
+            startText="Check-in"
+            endText="Check-out"
+            value={props.value}
+            onChange={(newValue) => {
+              props.setValue(newValue);
+            }}
+            renderInput={(startProps, endProps) => (
+              <React.Fragment>
+                <TextField {...startProps} />
+                <Box sx={{ mx: 2 }}> to </Box>
+                <TextField {...endProps} />
+              </React.Fragment>
+            )}
+          />
+          </LocalizationProvider>
+          <Button onClick={handleApply}>Apply</Button>
+        </Box>
+      </Modal>
+    </div>
   )
 };
+
 
 const style = {
   position: 'absolute',
@@ -50,23 +124,29 @@ const style = {
   p: 4,
 };
 
+
+
 export function OpenBooking(props) {
   const [user, loading, error] = useAuthState(auth);
   const [availableTimes, setTimes] = useState({});
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => { 
+    setOpen(true);
+    fetchAvailableDatesData();
+  }
   const handleClose = () => setOpen(false);
 
   const fetchAvailableDatesData = async () => {
     try {
-      const query = await db
-        .collection("available-dates")
-        .where("date", "==", props.date)
-        .get();
-      const data = await query.docs[0].data();
-      setTimes(data["available-times"])
+      const q = query(collection(db, "available-dates"), where("date", "==", props.date));
 
-      console.log(data["available-times"]);
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((pDoc) => {
+        setTimes(pDoc.data()["available-times"])
+
+        console.log("AVILBLE TIM", pDoc.data()["available-times"]);
+      });
+
       console.log(availableTimes)
     } catch (err) {
       console.error(err);
@@ -78,7 +158,6 @@ export function OpenBooking(props) {
     if (loading) return;
     
     // errorAlert()
-    fetchAvailableDatesData();
   }, [loading]);
 
   return (
@@ -145,9 +224,10 @@ function RadioButtonsGroup(props) {
                 variant="standard"
                 size="small"
                 sx={{ margin: 2}}
-                defaultValue={props.availableTimes[time]}
+                defaultValue={0}
                 InputProps={{ inputProps: { min: 0, max: props.availableTimes[time] } }}
               />
+              <Typography sx={{ display: "inline"}}>/ {props.availableTimes[time]}</Typography>
             <Divider />
 
             {/* </Tooltip> */}
@@ -169,14 +249,23 @@ function PersonalInformation(props) {
 
   const sendPersonalInformation = async () => {
     try {
-      await db.collection("booked-dates").add({
-       firstName: firstName,
-       lastName: lastName,
-       email: epost,
-       mobileNumber: mobileNumber,
-       extraInfo: extraInfo,
-       date: props.date,  
-    });
+       await addDoc(collection(db, "users"), {
+        firstName: firstName,
+        lastName: lastName,
+        email: epost,
+        mobileNumber: mobileNumber,
+        extraInfo: extraInfo,
+        date: props.date,  
+      });
+
+    //   await db.collection("booked-dates").add({
+    //    firstName: firstName,
+    //    lastName: lastName,
+    //    email: epost,
+    //    mobileNumber: mobileNumber,
+    //    extraInfo: extraInfo,
+    //    date: props.date,  
+    // });
       console.log("SEND DATA LOOL")
     } catch (err) {
       console.error(err);
@@ -188,6 +277,7 @@ function PersonalInformation(props) {
       if (loading) return;
       if (props.isSubmited) {
         console.log("aaaaaaa")
+        sendPersonalInformation()
       }
       // sendPersonalInformation();
       console.log(props.isSubmited)
@@ -361,14 +451,6 @@ return (
 };
 
 
-function AddValidDays(props) {
 
-  if (isValidDay(props.days)) {
-    console.log("aaaaa");
-    return(
-      <button>BOKA</button>
-    )
-  }
-}
 
 export default Booking;

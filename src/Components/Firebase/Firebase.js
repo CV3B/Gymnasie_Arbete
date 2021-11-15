@@ -1,6 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import firebase from "firebase";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword as signInEmailPassword, sendPasswordResetEmail as sendResetEmail, signOut  } from "firebase/auth";
+import { collection, addDoc  } from "firebase/firestore"; 
+import { getFirestore } from 'firebase/firestore'
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,15 +18,14 @@ const firebaseConfig = {
   measurementId: "G-W9Z3EL9TQV"
 };
 
-// Initialize Firebase
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const db = firebaseApp.firestore(firebaseApp);
-const analytics = getAnalytics(firebaseApp);
-const auth = firebaseApp.auth();
+// Initialize Firebase t
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getFirestore(firebaseApp)
+const auth = getAuth(firebaseApp);
 
 const signInWithEmailAndPassword = async (email, password) => {
   try {
-    await auth.signInWithEmailAndPassword(email, password);
+    await signInEmailPassword(auth, email, password);
   } catch (err) {
     console.error(err);
     alert(err.message);
@@ -33,14 +34,18 @@ const signInWithEmailAndPassword = async (email, password) => {
 
 const registerWithEmailAndPassword = async (name, email, password) => {
   try {
-    const res = await auth.createUserWithEmailAndPassword(email, password);
-    const user = res.user;
-    await db.collection("users").add({
-      uid: user.uid,
-      name,
-      authProvider: "local",
-      email,
-    });
+    await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      // console.log(user)
+      addDoc(collection(db, "users"), {
+        uid: user.uid,
+        name,
+        email,
+      });
+      // ...
+    })
+    
   } catch (err) {
     console.error(err);
     alert(err.message);
@@ -49,7 +54,7 @@ const registerWithEmailAndPassword = async (name, email, password) => {
 
 const sendPasswordResetEmail = async (email) => {
   try {
-    await auth.sendPasswordResetEmail(email);
+    await sendResetEmail(email);
     alert("Password reset link sent!");
   } catch (err) {
     console.error(err);
@@ -58,7 +63,7 @@ const sendPasswordResetEmail = async (email) => {
 };
 
 const logout = () => {
-  auth.signOut();
+  signOut(auth);
 };
 
 export {
@@ -68,4 +73,4 @@ export {
   registerWithEmailAndPassword,
   sendPasswordResetEmail,
   logout,
-}
+};

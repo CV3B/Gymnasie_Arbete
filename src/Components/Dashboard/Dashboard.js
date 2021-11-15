@@ -3,6 +3,8 @@ import { auth, db, logout } from "../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
 import Alert from '@mui/material/Alert';
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
+
 
 function Dashboard() {
   const [user, loading, error] = useAuthState(auth);
@@ -13,13 +15,14 @@ function Dashboard() {
 
   const fetchUserData = async () => {
     try {
-      const query = await db
-        .collection("users")
-        .where("uid", "==", user?.uid)
-        .get();
-      const data = await query.docs[0].data();
-      setName(data.name);
-      setIsAdmin(data.roles.Admin);
+      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((pDoc) => {
+        setName(pDoc.name);
+        setIsAdmin(pDoc.roles.Admin);
+      });
+      
 
     } catch (err) {
       console.error(err);
@@ -38,9 +41,9 @@ function Dashboard() {
     // }
   }
 
-  const errorAlert = () => {
-    return showUnauthorizedAlert ? (<Alert variant="filled" severity="error">Du har inte tillgång till den här komponenten!</Alert>) : null
-  }
+  // const errorAlert = () => {
+  //   return showUnauthorizedAlert ? (<Alert variant="filled" severity="error">Du har inte tillgång till den här komponenten!</Alert>) : null
+  // }
 
   useEffect(() => {
     if (loading) return;

@@ -30,6 +30,7 @@ function Calendar() {
 
   const [selectedMonth, setMonth] = useState(CURRENT_MONTH);
 
+  const [value, setValue] = useState([null, null]);
 
   // const [calendarDaysElement, setCalendarDaysElement] = useState("");
 
@@ -53,14 +54,16 @@ function Calendar() {
 
     return(
       days.map((day) => (
-          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
+          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date, dayjs(value[0]).format("YYYY-MM-DD"), dayjs(value[1]).format("YYYY-MM-DD")) ? "test2": ""} `}>
             <span>{day.dayOfMonth}</span>
             {/* <Booking day={day.date} /> */}
             {isValidDay(day.date) &&
               // <Button id={day.date} onClick={(e) => console.log(typeof e.target.id)}>
               //   BOKA
               // </Button>
+              <>
               <OpenBooking date={day.date} />
+              </>
             }
             {/* <button id={day.date} onClick={(e) => console.log(day)} /> */}
             {/* <button id={day.toString()} onClick={(e) => console.log(day)} /> */}
@@ -177,7 +180,9 @@ function Calendar() {
                 {selectedMonth}
             </div>
 
-            <button onClick={(e) => isValidDay("2021-08-30")}>DEBUG</button>
+            <button onClick={(e) => console.log(value)}>DEBUG123123</button>
+            <Booking value={value} setValue={setValue} />
+
 
             <section className="calendar-month-header-selectors">
               <span id="previous-month-selector" onClick={() => setPrevMonth()}>B</span>
@@ -200,23 +205,24 @@ function Calendar() {
         </div>
 )};
 
-export function isValidDay(currDate) {
+export function isValidDay(currDate, dateFrom, dateTo) {
 
   let arrValidDays = [];
 
-  for (const numDays in validDays) {
+  // for (const numDays in validDays) {
 
-    const date1 = dayjs(validDays[numDays].dateFrom)
-    const date2 = dayjs(validDays[numDays].dateTo)
+    const date1 = dayjs(dateFrom)
+    const date2 = dayjs(dateTo)
     const dateDiff = date2.diff(date1, "day")
     
     for (let i=0; i < dateDiff + 1; i++) {
-      arrValidDays.push(dayjs(validDays[numDays].dateFrom).add(i, "day"))
+      arrValidDays.push(dayjs(dateFrom).add(i, "day"))
     }
-  }
+  // }
 
   const getValidDays = arrValidDays.some(day => day.format("YYYY-MM-DD") === currDate)
   console.log(getValidDays)
+  console.log(dayjs(arrValidDays).format("YYYY-MM-DD"))
 
   return getValidDays
 }
@@ -226,8 +232,8 @@ export function isValidDay(currDate) {
 
 const validDays = {
   1: {
-    dateFrom: "2021-10-13",
-    dateTo: "2021-10-16",
+    dateFrom: "2021-11-13",
+    dateTo: "2021-11-16",
     numOfSpots: 10,
 
   }
