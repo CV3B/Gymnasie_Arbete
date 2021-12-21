@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import dayjs from "dayjs";
 import "./Calendar.css";
 
@@ -7,8 +7,10 @@ import { Button, CardActionArea } from '@mui/material';
 
 import Booking, { OpenBooking } from './Booking/Booking';
 
+import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
 
-
+import { auth, db, logout } from "../Firebase/Firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
@@ -16,27 +18,44 @@ dayjs.extend(weekday);
 dayjs.extend(weekOfYear);
 
 
-function Calendar() {
+function Calendar(props) {
 
   let currentMonthDays;
   let previousMonthDays;
   let nextMonthDays;
-
+  
   const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const TODAY = dayjs().format("YYYY-MM-DD");
   const INITIAL_YEAR = dayjs().format("YYYY");
   const INITIAL_MONTH = dayjs().format("M");
   const CURRENT_MONTH = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1)).format("MMMM YYYY")
-
+  const [user, loading, error] = useAuthState(auth);
   const [selectedMonth, setMonth] = useState(CURRENT_MONTH);
+  const [bz, setBz] = useState("pres");
 
   const [value, setValue] = useState([null, null]);
-
+  const [availbleDates, setAvailbleDates] = useState([])
   // const [calendarDaysElement, setCalendarDaysElement] = useState("");
+
+  const fetchAvailableDatesData = async () => {
+    try {
+      const q = query(collection(db, "available-dates"), where("date", "!=", "")); // TODO fixa så att den hittar rätt dagar.
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((pDoc) => {
+        setAvailbleDates(prev => [...prev, pDoc.data().date])
+      });
+  
+    } catch (err) {
+      console.error(err);
+      // alert("An error occured while fetching user data");
+    }
+  };
 
   function createCalendar(year = INITIAL_YEAR, month = INITIAL_MONTH) {
     // const calendarDaysElement = document.getElementById("calendar-days");
     // removeAllDayElements();
+
+    
   
     currentMonthDays = createDaysForCurrentMonth(
       year,
@@ -51,19 +70,50 @@ function Calendar() {
     const days = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
       
     console.log("Created Calendar")
+    
+    
+    function isValidDay(currDate) {
+      // fetchAvailableDatesData(currDate)
+      let arrValidDays = [];
+    
+      // for (const numDays in validDays) {
+    
+        // const date1 = dayjs(dateFrom)
+        // const date2 = dayjs(dateTo)
+        // const dateDiff = date2.diff(date1, "day")
+        
+        // for (let i=0; i < availbleDates + 1; i++) {
+        //   arrValidDays.push(availbleDates)
+        //   // console.log("daa",availbleDates[i]);
+        //   // console.log("a")
+        // }
+      // }
+      // let getValidDays = await (availbleDates !== undefined ? true : false) 
+      const getValidDays = availbleDates.some(day => day === currDate)
+      // console.log(getValidDays)
+      // if(getValidDays) console.log(getValidDays)
+      // console.log("yaa", availbleDates)
+      // console.log(getValidDays)
+      // return getValidDays
+      // console.log("k",arrValidDays)
+      // if(availbleDates === undefined) break;
+      return getValidDays
+      // if(availbleDates === currDate) return true;
+      // else return false;
+    }
 
     return(
       days.map((day) => (
-          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date, dayjs(value[0]).format("YYYY-MM-DD"), dayjs(value[1]).format("YYYY-MM-DD")) ? "test2": ""} `}>
+          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
             <span>{day.dayOfMonth}</span>
             {/* <Booking day={day.date} /> */}
             {isValidDay(day.date) &&
               // <Button id={day.date} onClick={(e) => console.log(typeof e.target.id)}>
               //   BOKA
               // </Button>
-              <>
+              
               <OpenBooking date={day.date} />
-              </>
+              
             }
             {/* <button id={day.date} onClick={(e) => console.log(day)} /> */}
             {/* <button id={day.toString()} onClick={(e) => console.log(day)} /> */}
@@ -140,7 +190,6 @@ function Calendar() {
     });
   }
 
-  const [bz, setBz] = useState("pres");
 
   function setPrevMonth() {
     setMonth(dayjs(selectedMonth).subtract(1, "month").format("MMMM YYYY"));
@@ -171,7 +220,10 @@ function Calendar() {
       return createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
     }
   }
-  
+
+  useEffect(() => {
+    fetchAvailableDatesData()
+  }, []);
     return (
         <div className="calendar-month">
 
@@ -180,8 +232,11 @@ function Calendar() {
                 {selectedMonth}
             </div>
 
-            <button onClick={(e) => console.log(value)}>DEBUG123123</button>
-            <Booking value={value} setValue={setValue} />
+            <button onClick={(e) => console.log(availbleDates)}>DEBUG123123</button>
+            {user && props.ISNAMN ? 
+              (<Booking value={value} setValue={setValue} />) : null
+            }
+            
 
 
             <section className="calendar-month-header-selectors">
@@ -205,27 +260,7 @@ function Calendar() {
         </div>
 )};
 
-export function isValidDay(currDate, dateFrom, dateTo) {
 
-  let arrValidDays = [];
-
-  // for (const numDays in validDays) {
-
-    const date1 = dayjs(dateFrom)
-    const date2 = dayjs(dateTo)
-    const dateDiff = date2.diff(date1, "day")
-    
-    for (let i=0; i < dateDiff + 1; i++) {
-      arrValidDays.push(dayjs(dateFrom).add(i, "day"))
-    }
-  // }
-
-  const getValidDays = arrValidDays.some(day => day.format("YYYY-MM-DD") === currDate)
-  console.log(getValidDays)
-  console.log(dayjs(arrValidDays).format("YYYY-MM-DD"))
-
-  return getValidDays
-}
 
 
 

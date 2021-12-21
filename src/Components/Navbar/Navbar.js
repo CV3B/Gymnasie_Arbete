@@ -6,6 +6,15 @@ import Slide from '@mui/material/Slide';
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import {
+	BrowserRouter as Router,
+	Switch,
+	Route,
+	Link,
+	useRouteMatch,
+	useParams,
+	useHistory 
+  } from "react-router-dom";
 
 import './Navbar.css';
 import tempLogo from "../../Images/tempLogo.jpg"
@@ -14,10 +23,12 @@ import transitions from '@material-ui/core/styles/transitions';
 function TopLogo() {
   return(
     <Container fixed sx={{ postion: "fixed", }} className="logo">
+		<Link to="/">
 			<img 
 				src={tempLogo}
 				alt="Logo"
 			/>
+		</Link>
     </Container>
   )
 }
@@ -52,16 +63,19 @@ function Navbar() {
     	<nav >
 				<div className={navbarClasses.join(" ") } >
 					<Grow in={scrolled} style={{ transformOrigin: '0 0 0' }}{...(scrolled ? { timeout: 1000 } : { timeout: 500 })}>
+						<Link to="/"> 
 						<img 
 							src={tempLogo}
 							className="logo-img"
 							alt="temp-logo"
+							
 						/>
+						</Link>
 					</Grow>
 					<div className="btns">
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">BUTTON</Button>
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">BUTTON</Button>
+						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Button</Button>
+						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Banor</Button>
+						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Kontakta</Button>
 					</div>
 				</div>
     	</nav>

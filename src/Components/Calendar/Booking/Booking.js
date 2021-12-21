@@ -34,6 +34,7 @@ import dayjs from "dayjs";
 
 import { isValidDay } from '../Calendar';
 
+// TODO Bugg: Rendera in PersonligInfo vid submit button för att den ska uppdatera isSubmited variabeln i PersonligInfo och sen skicka det till databasen
 function Booking(props) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -44,13 +45,11 @@ function Booking(props) {
       // let arrValidDays = [];
       const date1 = dayjs(props.value[0]).format("YYYY-MM-DD")
       const date2 = dayjs(props.value[1]).format("YYYY-MM-DD")
-      const dateDiff = date2.diff(date1, "day")
+      const dateDiff = dayjs(date2).diff(dayjs(date1), "day")
       
       for (let i=0; i < dateDiff + 1; i++) {
-        // arrValidDays.push()
-
         await addDoc(collection(db, "available-dates"), {
-          date: dayjs(date2).add(i, "day").format("YYYY-MM-DD"),
+          date: dayjs(date1).add(i, "day").format("YYYY-MM-DD"),
           "available-times": {
             "12:00": 10,
             "12:10": 9,
@@ -68,6 +67,7 @@ function Booking(props) {
 
   const handleApply = () => {
     sendAvailableDatesInformation()
+    props.setValue(props.value);
   }
 
   return (
@@ -128,21 +128,22 @@ const style = {
 
 export function OpenBooking(props) {
   const [user, loading, error] = useAuthState(auth);
-  const [availableTimes, setTimes] = useState({});
   const [open, setOpen] = useState(false);
+  const [availableTimes, setAvailableTimes] = useState()
+
   const handleOpen = () => { 
     setOpen(true);
-    fetchAvailableDatesData();
+    // props.fetchAvailableDatesData();
   }
   const handleClose = () => setOpen(false);
 
-  const fetchAvailableDatesData = async () => {
+  const fetchAvailableTimesData = async () => {
     try {
       const q = query(collection(db, "available-dates"), where("date", "==", props.date));
 
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((pDoc) => {
-        setTimes(pDoc.data()["available-times"])
+        setAvailableTimes(pDoc.data()["available-times"])
 
         console.log("AVILBLE TIM", pDoc.data()["available-times"]);
       });
@@ -156,6 +157,7 @@ export function OpenBooking(props) {
 
   useEffect(() => {
     if (loading) return;
+    fetchAvailableTimesData()
     
     // errorAlert()
   }, [loading]);
@@ -197,8 +199,6 @@ export function OpenBooking(props) {
 
 
 function RadioButtonsGroup(props) {
-  const [selectedTime, setSelectedTime] = useState(Object.keys(props.availableTimes)[0])
-  
 
   return (
     <FormControl component="fieldset">
@@ -206,7 +206,7 @@ function RadioButtonsGroup(props) {
       <RadioGroup
         aria-label="Tider"
         name="radio-buttons-group"
-        defaultValue={selectedTime}
+        defaultValue={Object.keys(props.availableTimes)[0]}
       >
         { Object.keys(props.availableTimes).map((time) => (
           <div>
@@ -249,7 +249,7 @@ function PersonalInformation(props) {
 
   const sendPersonalInformation = async () => {
     try {
-       await addDoc(collection(db, "users"), {
+       await addDoc(collection(db, "booked-dates"), {
         firstName: firstName,
         lastName: lastName,
         email: epost,
@@ -269,12 +269,12 @@ function PersonalInformation(props) {
       console.log("SEND DATA LOOL")
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      alert(err);
     }
   };
 
     useEffect(() => {
-      if (loading) return;
+      // if (loading) return;
       if (props.isSubmited) {
         console.log("aaaaaaa")
         sendPersonalInformation()
@@ -283,10 +283,9 @@ function PersonalInformation(props) {
       console.log(props.isSubmited)
       
       // fetchAvailableDatesData();
-    }, [props.isSubmited, loading]);
+    }, [props.isSubmited]);
   return (
     <>
-      {/* <Button onClick={() => console.log(props.isSubmited)}>PERSONALINFO</Button> */}
       <TextField
         id="firstname"
         label="Förnamn"
@@ -416,6 +415,7 @@ return (
       ))}
     </Stepper>
     <div>
+      <Button onClick={()=> console.log(isSubmited)}>AAAAAA</Button>
       {activeStep === steps.length ? (
         <div>
           <Typography className={classes.instructions}>All steps completed</Typography>
