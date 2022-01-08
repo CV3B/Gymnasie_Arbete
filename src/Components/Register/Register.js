@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Paper, Button, Typography, TextField } from "@mui/material";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Link, useHistory } from "react-router-dom";
 import {
@@ -25,43 +26,50 @@ function Register() {
   }, [user, loading]);
 
   return (
-    <div className="register">
-      <div className="register__container">
-        <input
+    <Paper elevation={12} className="register">
+      <div className="register-container">
+        <Typography variant="h3" >Register</Typography>
+        <TextField
           type="text"
-          className="register__textBox"
+          className="register-item"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Full Name"
+          variant="standard"
+
         />
-        <input
+        <TextField
           type="text"
-          className="register__textBox"
+          className="register-item"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="E-mail Address"
+        variant="standard"
+
         />
-        <input
+        <TextField
           type="password"
-          className="register__textBox"
+          className="register-item"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          variant="standard"
+
         />
-        <button className="register__btn" onClick={register}>
+        <Button variant="contained" className="register-item" onClick={register} >
           Register
-        </button>
-        <button
+        </Button>
+        {/* <button
           className="register__btn register__google"
         >
           Register with Google
-        </button>
+        </button> */}
 
-        <div>
-          Already have an account? <Link to="/">Login</Link> now.
-        </div>
+        <Typography className="register-item"  >
+          Already have an account? <Link to="/" style={{ textDecoration: 'none', color: "inherit" }}>Login</Link> now.
+        </Typography>
       </div>
-    </div>
+    </Paper>
   );
 }
 

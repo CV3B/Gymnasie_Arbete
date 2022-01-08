@@ -13,8 +13,10 @@ import Contact from './Components/OtherPages/Contact/Contact';
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from './Components/Login/Login';
+import Reset from './Components/Reset/Reset';
 import Register from './Components/Register/Register';
 import {ThemeProvider, createTheme} from "@mui/material/styles";
+import { Paper } from '@mui/material';
 // import theme from './Components/Theme/';
 
 //! TA BORT
@@ -30,7 +32,7 @@ import '@fontsource/roboto/700.css';
 
 
 // TODO Titta på alla CSS namn så att det inte finns två av samma
-//* Få skaer att popa ut från skärmen (HomeFeed Contact tre delarna popar ut)
+// TODO Link är bara på ett eller flera ord, istället för hela meningen (Login, Register)
 
 const theme = createTheme({
   palette: {
@@ -56,6 +58,17 @@ main #454F4F
 dark #394141
 */
 
+function PaperBackground(props){
+
+  const { text } = props
+
+  return(
+    <Paper elevation={12} sx={{padding: "20px", margin: "10px"}}>
+      {text}
+    </Paper>
+  )
+}
+
 function App() {
 
   return (
@@ -70,25 +83,39 @@ function App() {
                 <HomeFeed/>
                 {/* <Footer /> */}
               </Route>
-              <Route exact path="/login" component={Login} />
+              <Route exact path="/login" >
+                <Login />
+              </Route>
+              <Route exact path="/reset" >
+                <Reset />
+              </Route>
               <Route exact path="/register" component={Register} />
               <Route exact path="/booking" >
-                <Calendar ISNAMN={false} />
+              <PaperBackground text={
+                  <Calendar editMode={false} />
+                } />
+                
               </Route>
               <Route exact path="/contact" >
-                <Contact />
+                <PaperBackground text={
+                  <Contact />
+                } />
               </Route>
               <Route exact path="/about_us" >
                 <AboutUs />
               </Route>
               <Route exact path="/gokarts" >
-                <AboutGokarts />
+                <PaperBackground text={
+                  <AboutGokarts />
+                } />
               </Route>
               <Route exact path="/faq" >
                 <Faq />
               </Route>
               <Route exact path="/tracks" >
-                <TrackInfo />
+                <PaperBackground text={
+                  <TrackInfo />
+                } />
               </Route>
               <Route exact path="/dashboard" >
                 <Dashboard />

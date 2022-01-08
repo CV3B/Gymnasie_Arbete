@@ -2,8 +2,8 @@ body {
     font-family: sans-serif;
     font-weight: 100;
     --grey-100: #e4e9f0;
-    --grey-200: #cfd7e3;
-    --grey-300: #b5c0cd;
+    --grey-200: #a3abb3;
+    --grey-300: #80878f;
     --grey-800: #3e4e63;
     --grid-gap: 1px;
     --day-label-size: 20px;
@@ -18,8 +18,10 @@ body {
   
   .calendar-month {
     position: relative;
-    background-color: var(--grey-200);
-    border: solid 1px var(--grey-200);
+    background-color: #a3abb3;
+    /* border: solid thin var(--grey-200); */
+    /* border-radius: 7px; */
+    /* z-index: ; */
   }
   
   .calendar-month-header {
@@ -27,6 +29,7 @@ body {
     justify-content: space-between;
     background-color: #fff;
     padding: 10px;
+    border-radius: 7px 7px 0 0;
   }
   
   .calendar-month-header-selected-month {
@@ -38,12 +41,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 80px;
+    /* width: 80px; */
   }
   
-  .calendar-month-header-selectors > * {
+  /* .calendar-month-header-selectors > * {
     cursor: pointer;
-  }
+  } */
   
   .day-of-week {
     color: var(--grey-800);
@@ -60,8 +63,8 @@ body {
   }
   
   .day-of-week > * {
-    text-align: right;
-    padding-right: 5px;
+    /* text-align: right; */
+    /* padding-right: 5px; */
   }
   
   .days-grid {
@@ -86,7 +89,7 @@ body {
     justify-content: center;
     align-items: center;
     position: absolute;
-    right: 2px;
+    /* right: 2px; */
     width: var(--day-label-size);
     height: var(--day-label-size);
   }
@@ -103,7 +106,7 @@ body {
   .calendar-day--today > span {
     color: #fff;
     border-radius: 9999px;
-    background-color: var(--grey-800);
+    background-color: #1e88e5;
   }
 
   .test {

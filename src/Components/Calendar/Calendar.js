@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import dayjs from "dayjs";
 import "./Calendar.css";
-
+import { Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import { Button, CardActionArea } from '@mui/material';
-
+import { Button, CardActionArea, Paper } from '@mui/material';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import IconButton from '@mui/material/IconButton';
 import Booking, { OpenBooking } from './Booking/Booking';
 
 import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
@@ -104,8 +107,8 @@ function Calendar(props) {
 
     return(
       days.map((day) => (
-          <li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
-            <span>{day.dayOfMonth}</span>
+        <Paper elevation={12} ><li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
+            <span><Typography variant='subtitle1' >{day.dayOfMonth}</Typography></span>
             {/* <Booking day={day.date} /> */}
             {isValidDay(day.date) &&
               // <Button id={day.date} onClick={(e) => console.log(typeof e.target.id)}>
@@ -118,7 +121,7 @@ function Calendar(props) {
             {/* <button id={day.date} onClick={(e) => console.log(day)} /> */}
             {/* <button id={day.toString()} onClick={(e) => console.log(day)} /> */}
             
-          </li>
+          </li></Paper>
       ))
     )
   };
@@ -225,31 +228,30 @@ function Calendar(props) {
     fetchAvailableDatesData()
   }, []);
     return (
-        <div className="calendar-month">
+        <Paper elevation={12} className="calendar-month">
 
           <section className="calendar-month-header">
-            <div id="selected-month" className="calendar-month-header-selected-month">
+            <Typography variant='h5' id="selected-month" className="calendar-month-header-selected-month">
                 {selectedMonth}
-            </div>
+            </Typography>
 
-            <button onClick={(e) => console.log(availbleDates)}>DEBUG123123</button>
-            {user && props.ISNAMN ? 
+            {user && props.editMode ? 
               (<Booking value={value} setValue={setValue} />) : null
             }
             
 
 
             <section className="calendar-month-header-selectors">
-              <span id="previous-month-selector" onClick={() => setPrevMonth()}>B</span>
-              <span id="present-month-selector" onClick={() => setPresMonth()}>Today</span>
-              <span id="next-month-selector" onClick={() => setNextMonth()}>F</span>
+              <IconButton id="previous-month-selector" onClick={() => setPrevMonth()}><ChevronLeftIcon /></IconButton>
+              <IconButton id="present-month-selector" onClick={() => setPresMonth()}><KeyboardArrowDownIcon /></IconButton>
+              <IconButton id="next-month-selector" onClick={() => setNextMonth()}><ChevronRightIcon /></IconButton>
             </section>
 
           </section>
         
           <ol id="days-of-week" className="day-of-week">
             {WEEKDAYS.map((weekday) => (
-              <li>{weekday}</li>
+              <li><Typography variant='h6' >{weekday}</Typography></li>
             ))} 
           </ol>
         
@@ -257,7 +259,7 @@ function Calendar(props) {
             {aa()}
           </ol>
           
-        </div>
+        </Paper>
 )};
 
 

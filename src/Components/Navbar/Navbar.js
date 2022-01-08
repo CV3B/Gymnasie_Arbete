@@ -62,6 +62,8 @@ function Navbar() {
 			<TopLogo />
     	<nav >
 				<div className={navbarClasses.join(" ") } >
+				<div className="nav-container">
+
 					<Grow in={scrolled} style={{ transformOrigin: '0 0 0' }}{...(scrolled ? { timeout: 1000 } : { timeout: 500 })}>
 						<Link to="/"> 
 						<img 
@@ -72,10 +74,11 @@ function Navbar() {
 						/>
 						</Link>
 					</Grow>
-					<div className="btns">
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Button</Button>
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Banor</Button>
-						<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Kontakta</Button>
+						<div className="nav-btns">
+							<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Button</Button>
+							<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Banor</Button>
+							<Button id="nav-button" variant={scrolled ? "text" : "contained"} color="inherit">Kontakta</Button>
+						</div>
 					</div>
 				</div>
     	</nav>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import closeup_gokart from "../../../Images/closeup_gokart.jpg";
-import { Typography } from "@mui/material";
+import { Typography, Paper } from "@mui/material";
 
 import "./AboutGokarts.css";
-import { typography } from "@mui/system";
+// import { typography } from "@mui/system";
 
 function AboutGokarts() {
 

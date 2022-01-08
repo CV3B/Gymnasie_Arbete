@@ -10,9 +10,13 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
 import { Button, Typography } from "@mui/material";
+import Divider from '@mui/material/Divider';
 import { ClassNames } from "@emotion/react";
-
+import InputAdornment from '@mui/material/InputAdornment';
 import { makeStyles } from '@mui/styles';
+import SubjectIcon from '@mui/icons-material/Subject';
+import TitleIcon from '@mui/icons-material/Title';
+// import EmailIcon from '@mui/icons-material/Email';
 // function Map() {
 //   const [viewport, setViewport] = useState({
 //     longitude: 57.71,
@@ -57,6 +61,10 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontWeight: "bold",
     textTransform: "uppercase"
+  },
+  whiteBackgroundColor: {
+    backgroundColor: "white",
+    marginTop: "20px"
   }
 }));
 
@@ -67,7 +75,7 @@ function Contact() {
 
   return(
     <>
-     <div className="contact-page-container contact-page-section-1">
+     <div className="contact-page-container">
        <div className="contact-page-item ">
         {/* <Map /> */}
        <iframe className="contact-map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2131.4562110928696!2d11.964519616094407!3d57.70870804692339!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x464ff366aa6a6c99%3A0x5df17fc3a64d3501!2s%C3%96stra%20Hamngatan%2013%2C%20411%2010%20G%C3%B6teborg!5e0!3m2!1ssv!2sse!4v1640041353258!5m2!1ssv!2sse" width="99%" height="100%" allowfullscreen="" loading="lazy" frameBorder="0"></iframe>
@@ -75,21 +83,23 @@ function Contact() {
        {/* <div className="contact-page-item contact-page-paper"> 
 
        </div> */}
-       <div className="contact-page-item" style={{border: "solid thin", borderRadius: "7px"}}>
+       <div className="contact-page-item" style={{borderRadius: "7px"}}>
          <div className="contact-social">
-           <IconButton>
+           <IconButton color="white">
             <FacebookIcon fontSize="large" />
            </IconButton>
 
-           <IconButton>
+           <IconButton color="white">
             <TwitterIcon fontSize="large"/>
            </IconButton>
 
-           <IconButton>
+           <IconButton color="white">
             <InstagramIcon fontSize="large"/>
            </IconButton>
          </div>
          <div className="contact-form">
+         <Divider variant="middle" className={classes.whiteBackgroundColor} sx={{ marginBottom: "20px"}}/>
+
            <Typography paragraph className={classes.whiteTextColor}>Kontakta</Typography>
            <TextField
             id="email"
@@ -100,19 +110,29 @@ function Contact() {
             color="white"
             focused 
             InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon color="white" />
+                </InputAdornment>
+              ),
               className: classes.multilineColor
             }}
             // sx={{padding: "8px"}}
            />
            <TextField
             id="subject"
-            label="Ämne"
+            label="Titel"
             variant="outlined"
             className="contact-input"
             margin="dense"
             color="white"
             focused 
             InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <TitleIcon color="white" />
+                </InputAdornment>
+              ),
               className: classes.multilineColor
             }}
             // sx={{padding: "8px"}}
@@ -128,6 +148,11 @@ function Contact() {
             color="white"
             focused 
             InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SubjectIcon color="white" />
+                </InputAdornment>
+              ),
               className: classes.multilineColor
             }}
             // sx={{margin: "20px"}}
@@ -136,28 +161,32 @@ function Contact() {
            <Button className="contact-input contact-submit" variant="contained" color="secondary" sx={{marginTop: "10px"}}>
              Skicka
            </Button>
+           <Divider variant="middle" className={classes.whiteBackgroundColor} />
 
          </div>
-         <div>
-            <IconButton sx={{ color: "black" }} >
+         <div className="contact-page-find-us-btn">
+            <IconButton color="secondary" >
               <LocationOnIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "black" }}>ADRESS</Typography>
-            <Typography variant="subtitle1" sx={{ color: "black" }}>GATENAMN 9</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor}>ADRESS</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>GATENAMN 9</Typography>
+            <Divider variant="middle" className={classes.whiteBackgroundColor} />
           </div>
-          <div>
-            <IconButton sx={{ color: "black" }} >
+          <div className="contact-page-find-us-btn">
+            <IconButton color="secondary" >
               <LocalPhoneIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "black" }}>TELEFON</Typography>
-            <Typography variant="subtitle1" sx={{ color: "black" }}>0704123456</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor}>TELEFON</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>0704123456</Typography>
+            <Divider variant="middle" className={classes.whiteBackgroundColor} />
           </div>
-          <div>
-            <IconButton sx={{ color: "black" }} >
+          <div className="contact-page-find-us-btn">
+            <IconButton color="secondary" >
               <EmailIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "black" }}>EMAIL</Typography>
-            <Typography variant="subtitle1" sx={{ color: "black" }}>info@contact.com</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor} >EMAIL</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>info@contact.com</Typography>
+            <Divider variant="middle" className={classes.whiteBackgroundColor} />
           </div>
        </div>
      </div>
