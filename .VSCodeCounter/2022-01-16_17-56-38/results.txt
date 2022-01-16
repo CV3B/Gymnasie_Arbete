@@ -1,0 +1,96 @@
+Date : 2022-01-16 17:56:38
+Directory : c:\Users\calle\Desktop\-\reactApp\gymn_arbete
+Total : 46 files,  43948 codes, 435 comments, 531 blanks, all 44914 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          3 |     41,539 |          0 |          3 |     41,542 |
+| JavaScript |         23 |      1,785 |        232 |        343 |      2,360 |
+| CSS        |         17 |        563 |        180 |        151 |        894 |
+| Markdown   |          1 |         38 |          0 |         33 |         71 |
+| HTML       |          1 |         22 |         23 |          1 |         46 |
+| XML        |          1 |          1 |          0 |          0 |          1 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                  | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                     |         46 |     43,948 |        435 |        531 |     44,914 |
+| public                                                                                                |          2 |         47 |         23 |          2 |         72 |
+| src                                                                                                   |         41 |      2,349 |        412 |        494 |      3,255 |
+| src\Components                                                                                        |         33 |      2,160 |        389 |        463 |      3,012 |
+| src\Components\AdminPanel                                                                             |          1 |         32 |          3 |          9 |         44 |
+| src\Components\Calendar                                                                               |          6 |        833 |        139 |        192 |      1,164 |
+| src\Components\Calendar\Booking                                                                       |          4 |        557 |         96 |        111 |        764 |
+| src\Components\Dashboard                                                                              |          2 |        159 |         32 |         41 |        232 |
+| src\Components\Firebase                                                                               |          1 |         59 |          8 |         10 |         77 |
+| src\Components\Footer                                                                                 |          2 |         35 |         16 |          6 |         57 |
+| src\Components\HomeFeed                                                                               |          2 |        181 |         27 |         44 |        252 |
+| src\Components\Login                                                                                  |          2 |        112 |         27 |         21 |        160 |
+| src\Components\Navbar                                                                                 |          2 |        115 |         16 |         23 |        154 |
+| src\Components\OtherPages                                                                             |         10 |        476 |         77 |         79 |        632 |
+| src\Components\OtherPages\AboutGokarts                                                                |          2 |         81 |         10 |         14 |        105 |
+| src\Components\OtherPages\AboutUs                                                                     |          2 |          0 |          5 |          3 |          8 |
+| src\Components\OtherPages\Contact                                                                     |          2 |        226 |         38 |         41 |        305 |
+| src\Components\OtherPages\Faq                                                                         |          2 |         95 |          3 |          8 |        106 |
+| src\Components\OtherPages\TrackInfo                                                                   |          2 |         74 |         21 |         13 |        108 |
+| src\Components\Register                                                                               |          2 |        101 |         17 |         21 |        139 |
+| src\Components\Reset                                                                                  |          2 |         57 |         10 |         15 |         82 |
+| src\Components\Theme                                                                                  |          1 |          0 |         17 |          2 |         19 |
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                              | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\README.md                                               | Markdown   |         38 |          0 |         33 |         71 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\package-lock.json                                       | JSON       |     41,457 |          0 |          1 |     41,458 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\package.json                                            | JSON       |         57 |          0 |          1 |         58 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\public\index.html                                       | HTML       |         22 |         23 |          1 |         46 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\public\manifest.json                                    | JSON       |         25 |          0 |          1 |         26 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\App.css                                             | CSS        |         35 |          3 |          7 |         45 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\App.js                                              | JavaScript |        109 |         13 |         14 |        136 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\App.test.js                                         | JavaScript |          7 |          0 |          2 |          9 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\AdminPanel\AdminPanel.js                 | JavaScript |         32 |          3 |          9 |         44 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Booking\Booking.css             | CSS        |          0 |          0 |          1 |          1 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Booking\Booking.js              | JavaScript |        414 |         41 |         80 |        535 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Booking\BookingsDisplay.css     | CSS        |          9 |          1 |          1 |         11 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Booking\BookingsDisplay.js      | JavaScript |        134 |         54 |         29 |        217 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Calendar.css                    | CSS        |         91 |         10 |         16 |        117 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Calendar\Calendar.js                     | JavaScript |        185 |         33 |         65 |        283 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Dashboard\Dashboard.css                  | CSS        |         50 |         17 |         10 |         77 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Dashboard\Dashboard.js                   | JavaScript |        109 |         15 |         31 |        155 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Firebase\Firebase.js                     | JavaScript |         59 |          8 |         10 |         77 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Footer\Footer.css                        | CSS        |          2 |         16 |          0 |         18 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Footer\Footer.js                         | JavaScript |         33 |          0 |          6 |         39 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\HomeFeed\HomeFeed.css                    | CSS        |         80 |         26 |         26 |        132 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\HomeFeed\HomeFeed.js                     | JavaScript |        101 |          1 |         18 |        120 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Login\Login.css                          | CSS        |         37 |         14 |         12 |         63 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Login\Login.js                           | JavaScript |         75 |         13 |          9 |         97 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Navbar\Navbar.css                        | CSS        |         38 |         16 |         11 |         65 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Navbar\Navbar.js                         | JavaScript |         77 |          0 |         12 |         89 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\AboutGokarts\AboutGokarts.css | CSS        |         38 |          9 |         10 |         57 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\AboutGokarts\AboutGokarts.js  | JavaScript |         43 |          1 |          4 |         48 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\AboutUs\AboutUs.css           | CSS        |          0 |          0 |          1 |          1 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\AboutUs\AboutUs.js            | JavaScript |          0 |          5 |          2 |          7 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\Contact\Contact.css           | CSS        |         53 |         22 |         21 |         96 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\Contact\Contact.js            | JavaScript |        173 |         16 |         20 |        209 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\Faq\Faq.css                   | CSS        |         18 |          1 |          2 |         21 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\Faq\Faq.js                    | JavaScript |         77 |          2 |          6 |         85 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\TrackInfo\TrackInfo.css       | CSS        |         37 |         21 |         10 |         68 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\OtherPages\TrackInfo\TrackInfo.js        | JavaScript |         37 |          0 |          3 |         40 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Register\Register.css                    | CSS        |         37 |         14 |         12 |         63 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Register\Register.js                     | JavaScript |         64 |          3 |          9 |         76 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Reset\Reset.css                          | CSS        |         26 |         10 |          9 |         45 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Reset\Reset.js                           | JavaScript |         31 |          0 |          6 |         37 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\Components\Theme\Theme.js                           | JavaScript |          0 |         17 |          2 |         19 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\index.css                                           | CSS        |         12 |          0 |          2 |         14 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\index.js                                            | JavaScript |         12 |          3 |          3 |         18 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\logo.svg                                            | XML        |          1 |          0 |          0 |          1 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\reportWebVitals.js                                  | JavaScript |         12 |          0 |          2 |         14 |
+| c:\Users\calle\Desktop\-\reactApp\gymn_arbete\src\setupTests.js                                       | JavaScript |          1 |          4 |          1 |          6 |
+| Total                                                                                                 |            |     43,948 |        435 |        531 |     44,914 |
++-------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

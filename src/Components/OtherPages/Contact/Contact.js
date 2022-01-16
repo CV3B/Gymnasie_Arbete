@@ -1,5 +1,5 @@
 import "./Contact.css";
-import { useState } from 'react';
+import { useState, useRef  } from 'react';
 import ReactMapGL, { Marker } from 'react-map-gl';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
@@ -16,6 +16,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { makeStyles } from '@mui/styles';
 import SubjectIcon from '@mui/icons-material/Subject';
 import TitleIcon from '@mui/icons-material/Title';
+import emailjs from '@emailjs/browser';
 // import EmailIcon from '@mui/icons-material/Email';
 // function Map() {
 //   const [viewport, setViewport] = useState({
@@ -27,31 +28,6 @@ import TitleIcon from '@mui/icons-material/Title';
 //     <ReactMapGL {...viewport} width="100px" height="100px" onViewportChange={setViewport} />
 //   );
 // }
-
-const TOKEN = "pk.eyJ1IjoiY3YzYiIsImEiOiJja3hmN3ZjeTcwdjQ0MnVxdjJsZWtvZjNqIn0.XtmeioOaO0zN6KL7pHBuDw";
-
-function Map() {
-  const [viewport, setViewport] = useState({
-    longitude: 57.71,
-    latitude: 11.97,
-    zoom: 8,
-    
-  });
-
-  return (
-    <ReactMapGL
-      {...viewport}
-      width="100%"
-      height="100%"
-      onViewportChange={(viewport) => setViewport(viewport)}
-      mapboxApiAccessToken={TOKEN}
-    >
-      <Marker latitude={11.97} longitude={57.71} offsetLeft={-20} offsetTop={-10}>
-        <div>Gokart</div>
-      </Marker>
-    </ReactMapGL>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   multilineColor:{
@@ -71,7 +47,33 @@ const useStyles = makeStyles((theme) => ({
 
 
 function Contact() {
+  const [userSubject, setUserSubject] = useState()
+  const [userEmail, setUserEmail] = useState()
+  const [userMessage, setUserMessage] = useState()
+  
+
   const classes = useStyles()
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    let data = {
+      // to_email: "gymnarbt@gmail.com",
+      subject: userSubject,
+      user_name: userEmail,
+      message: userMessage,
+      
+    }
+
+    emailjs.sendForm('service_e50xyvp', 'template_8p31hvy', form.current, 'user_OvRVESz4UKcl3nNG4n3G7')
+      .then((result) => {
+          console.log(result.text);
+      }, (error) => {
+          console.log(error.text);
+      });
+  };
+
 
   return(
     <>
@@ -101,8 +103,10 @@ function Contact() {
          <Divider variant="middle" className={classes.whiteBackgroundColor} sx={{ marginBottom: "20px"}}/>
 
            <Typography paragraph className={classes.whiteTextColor}>Kontakta</Typography>
+           <form ref={form} onSubmit={sendEmail}>
            <TextField
             id="email"
+            name="user_email"
             label="Email"
             variant="outlined"
             className="contact-input"
@@ -117,10 +121,13 @@ function Contact() {
               ),
               className: classes.multilineColor
             }}
+            onChange={e => setUserEmail(e.target.value)}
+
             // sx={{padding: "8px"}}
            />
            <TextField
             id="subject"
+            name="user_name" //!
             label="Titel"
             variant="outlined"
             className="contact-input"
@@ -135,10 +142,13 @@ function Contact() {
               ),
               className: classes.multilineColor
             }}
+            onChange={e => setUserSubject(e.target.value)}
+
             // sx={{padding: "8px"}}
            />
            <TextField
             id="message"
+            name="message"
             label="Meddelande"
             variant="outlined"
             className="contact-input contact-message-form"
@@ -155,12 +165,14 @@ function Contact() {
               ),
               className: classes.multilineColor
             }}
+            onChange={e => setUserMessage(e.target.value)}
+            
             // sx={{margin: "20px"}}
            />
-           
-           <Button className="contact-input contact-submit" variant="contained" color="secondary" sx={{marginTop: "10px"}}>
+           <Button type="submit" className="contact-input contact-submit" variant="contained" color="secondary" sx={{marginTop: "10px"}}>
              Skicka
            </Button>
+           </form>
            <Divider variant="middle" className={classes.whiteBackgroundColor} />
 
          </div>

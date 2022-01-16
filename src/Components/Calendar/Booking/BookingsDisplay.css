@@ -3,5 +3,9 @@
   max-width: 692px;
   align-items: center;
   margin: auto;
+  /* margin-top: 40px; */
+}
+
+.bookings-paper:nth-child(n+2) {
   margin-top: 40px;
 }

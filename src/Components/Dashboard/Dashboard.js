@@ -16,7 +16,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import BookingsDisplay from "../Calendar/Booking/BookingsDisplay"; 
 
 
-function Dashboard() {
+function Dashboard(props) {
   const [user, loading, error] = useAuthState(auth);
   const [name, setName] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -64,7 +64,7 @@ function Dashboard() {
       case "calendar":
         return (<CalendarDisplay />);
       case "accountSettings":
-        return (<AccountSettings />);
+        return (<AccountSettings name={name} />);
       case "bookingsDisplay":
         return (<BookingsDisplay />);
       default:
@@ -86,7 +86,7 @@ function Dashboard() {
     <div className="first-dashboard-container">
     <div id="mySidenav" class="sidenav">
     {/* <div className="dashtest"><AccountCircleIcon color="white" sx={{float: "left", }} /><Typography sx={{color: "#ffffff", marginBottom: "6px", textAlign: "left"}} ></Typography></div> */}
-    <a><Button size="large" onClick={() => setSelectedDisplay("accountSettings") } startIcon={<AccountCircleIcon />} color="white" >{name[0]}.{name.split(" ").pop()}</Button></a>
+    <Button size="large" onClick={() => setSelectedDisplay("accountSettings") } startIcon={<AccountCircleIcon />} color="white" >{name[0]}.{name.split(" ").pop()}</Button>
       <Divider variant="middle" color="white" />
       <a><Button  onClick={() => setSelectedDisplay("bookingsDisplay") } startIcon={<FormatListBulletedIcon />} color="white" >Bokningar</Button></a>
       <a><Button onClick={() => setSelectedDisplay("calendar") } startIcon={<CalendarTodayIcon />} color="white" >Kalender</Button></a>
@@ -116,7 +116,7 @@ function TestDisplay() {
 
   return(
     <div>
-      Logged in as
+      Under konstruktion
         {/* <div>{name}</div> */}
         {/* <div>{user?.email}</div> */}
         <button className="dashboard__btn" onClick={logout}>
@@ -135,10 +135,13 @@ function CalendarDisplay() {
   )
 }
 
-function AccountSettings() {
+function AccountSettings(props) {
 
   return(
+    <>
+      <Typography variant="h4" sx={{ marginBottom: "40px", paddingTop: "20px"}} >{props.name}</Typography>
       <Reset />
+    </>
   )
 }
 

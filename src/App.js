@@ -33,7 +33,11 @@ import '@fontsource/roboto/700.css';
 
 // TODO Titta på alla CSS namn så att det inte finns två av samma
 // TODO Link är bara på ett eller flera ord, istället för hela meningen (Login, Register)
-
+////  Skicka mail via kontakt sidan
+////  DB spara antal personer samt visa de i "Bokningar", sök ruta?
+//? Sök ruta i Bokingar
+// TODO Beställa x antal åk 
+// TODO Rensa DB ifall tom eller x dagar
 const theme = createTheme({
   palette: {
     primary: {
