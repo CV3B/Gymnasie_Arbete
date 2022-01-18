@@ -30,13 +30,14 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+//* Inställningar kan man ändra på tiderna som är default
 
 // TODO Titta på alla CSS namn så att det inte finns två av samma
 // TODO Link är bara på ett eller flera ord, istället för hela meningen (Login, Register)
 ////  Skicka mail via kontakt sidan
 ////  DB spara antal personer samt visa de i "Bokningar", sök ruta?
 //? Sök ruta i Bokingar
-// TODO Beställa x antal åk 
+//// Beställa x antal åk 
 // TODO Rensa DB ifall tom eller x dagar
 const theme = createTheme({
   palette: {

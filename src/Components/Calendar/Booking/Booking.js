@@ -7,9 +7,10 @@ import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import TextField from '@mui/material/TextField';
-
+import DoneIcon from '@mui/icons-material/Done';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -158,6 +159,8 @@ export function OpenBooking(props) {
 
   const [selectedTimes123, setSelectedTimes123] = useState()
 
+  
+
   const handleOpen = () => { 
     setOpen(true);
     // props.fetchAvailableDatesData();
@@ -189,6 +192,8 @@ export function OpenBooking(props) {
       // alert("An error occured while fetching user data");
     }
   };
+
+
 
   useEffect(() => {
     if (loading) return;
@@ -222,7 +227,7 @@ export function OpenBooking(props) {
                 <Typography>{time} - {availableTimes[time]}</Typography>
               )) } */}
       <Button onClick={()=> console.log(selectedTimes123)}>BOKA</Button>
-              <BookingStepper isSubmited={isSubmited} setSubmit={setSubmit} selectedTimes123={selectedTimes123} setSelectedTimes123={setSelectedTimes123} availableTimes={availableTimes} date={props.date} quantityPeople={quantityPeople} setQuantityPeople={setQuantityPeople} selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+              <BookingStepper handleClose={handleClose} isSubmited={isSubmited} setSubmit={setSubmit} selectedTimes123={selectedTimes123} setSelectedTimes123={setSelectedTimes123} availableTimes={availableTimes} date={props.date} quantityPeople={quantityPeople} setQuantityPeople={setQuantityPeople} selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
             </Typography>
           </Box>
         </Fade>
@@ -235,12 +240,60 @@ export function OpenBooking(props) {
 
 function RadioButtonsGroup(props) {
 
-  const handleChange = (event) => {
+  // * Kod bitar för att ett säkrare och mer hållbart tids system 
+  // function addStr(str, index, stringToAdd){
+  //   return str.substring(0, index) + stringToAdd + str.substring(index, str.length);
+  // }
+
+  // let newAvailableTimesArr = [];
+  // let minAvailableTime;
+  // Object.keys(props.selectedTimes123).forEach((i, k) => {
+  //   newAvailableTimesArr[k] = i.replace(':', '');
+  //   newAvailableTimesArr = newAvailableTimesArr.map(Number)
+  // });
+
+  // minAvailableTime = Math.min(...newAvailableTimesArr);
+  // minAvailableTime = String(minAvailableTime)
+  // minAvailableTime = addStr(minAvailableTime, 2, ":")
+
+  // Object.keys(props.availableTimes).map((time) => {
+  //   if(!props.selectedTimes123[time]){
+  //     const index = newAvailableTimesArr.indexOf(time.split(':', '').map(Number))
+  //     newAvailableTimesArr.splice(index, 1)
+  //   }
+  // })
+
+
+
+    const [availableSeats, setAvailableSeats] = useState([])
+    const [seatsValue, setSeatsValue] = useState(0)
+  
+  
+
+  
+  //TODO Fixa så att seatsValueConstraint fungerar, just nu uppdateras den inte när man trycker på checkboxarna
+  
+
+  const handleChange = (e) => {
     props.setSelectedTimes123({
       ...props.selectedTimes123,
-      [event.target.name]: event.target.checked,
+      [e.target.name]: e.target.checked,
     });
+    if(e.target.checked) {
+      setAvailableSeats(prev => [...prev, props.availableTimes[e.target.name]])
+
+    } else {
+      setAvailableSeats(availableSeats.filter(item => item !== props.availableTimes[e.target.name]))
+    }
   };
+
+  const maxSeatsConstraint = () => (isNaN(Math.min(...availableSeats)) ? 1 : Math.min(...availableSeats))
+  const seatsValueConstraint = (e) => (e.target.value > Math.min(...availableSeats) ? setSeatsValue(Math.min(...availableSeats)) : setSeatsValue(e.target.value))
+
+  const handleSeatsValue = (e) => {
+    props.setQuantityPeople(e.target.value) 
+    seatsValueConstraint(e)
+  }
 
   return (
     <FormControl component="fieldset">
@@ -250,7 +303,23 @@ function RadioButtonsGroup(props) {
         name="radio-buttons-group"
         defaultValue={null}
       >
-      <Button onClick={()=> console.log(props)}>DDDDDDDD</Button>
+        <Button onClick={()=> console.log()} >QQQQQQQQQQ</Button>
+        <Button onClick={()=> console.log(...availableSeats)} >GGGGGGGGGGGG</Button>
+      <TextField
+        id="standard-number"
+        label="Platser"
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="standard"
+        size="small"
+        sx={{ margin: 2}}
+        defaultValue={1}
+        InputProps={{ inputProps: { min: 1, max: maxSeatsConstraint() } }}
+        onChange={(e)=> handleSeatsValue(e)}
+        value={seatsValue}
+      />
         
         { Object.keys(props.availableTimes).map((time) => (
           <div>
@@ -265,20 +334,7 @@ function RadioButtonsGroup(props) {
             />
             {/* <Tooltip title="Platser kvar"> */}
               {/* <Typography sx={{ float: "right" }} >({props.availableTimes[time]})</Typography> */}
-              <TextField
-                id="standard-number"
-                label="Platser"
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="standard"
-                size="small"
-                sx={{ margin: 2}}
-                defaultValue={0}
-                InputProps={{ inputProps: { min: 0, max: props.availableTimes[time] } }}
-                onChange={e => props.setQuantityPeople(e.target.value) }
-              />
+              
               <Typography sx={{ display: "inline"}}>/ {props.availableTimes[time]}</Typography>
             <Divider />
 
@@ -291,6 +347,10 @@ function RadioButtonsGroup(props) {
   );
 }
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 function PersonalInformation(props) {
   // const [personalInfo, setPersonalInfo] = useState({})
   const [firstName, setFirstName] = useState("")
@@ -299,6 +359,10 @@ function PersonalInformation(props) {
   const [mobileNumber, setMobileNumber] = useState("")
   const [extraInfo, setExtraInfo] = useState("")
   const [user, loading, error] = useAuthState(auth);
+
+  const [isSubmited2, setSubmit2] = useState(false);
+
+  // const [openSuccessScreen, setOpenSuccessScreen] = useState(false);
 
   let selectedTimes = [];
   if(props.renderMode) {
@@ -311,16 +375,25 @@ function PersonalInformation(props) {
     })
   }
 
-  let date = props.date 
+  
+  const handleSubmit = () => {
+    setSubmit2(true)
+    console.log("clicked")
+    // setOpenSuccessScreen(true)
+    setTimeout(function() {
+      props.handleClose()
 
-  const data = {
-    firstName,
-    lastName,
-    epost,
-    mobileNumber,
-    extraInfo,
-    date
+    }, 10000)
   }
+
+  // const handleClose = (event, reason) => {
+  //   if (reason === 'clickaway') {
+  //     return;
+  //   }
+
+  //   setOpenSuccessScreen(false);
+  // };
+
 
   const sendPersonalInformation = async () => {
     try {
@@ -330,11 +403,11 @@ function PersonalInformation(props) {
         email: epost,
         mobileNumber: mobileNumber,
         extraInfo: extraInfo,
-        // date: date,
-        // qPeople: props.quantityPeople,
-        // selectedTime: selectedTimes   
+        date: props.date,
+        qPeople: props.quantityPeople,
+        selectedTime: selectedTimes   
       });
-
+      
     //   await db.collection("booked-dates").add({
     //    firstName: firstName,
     //    lastName: lastName,
@@ -361,20 +434,19 @@ function PersonalInformation(props) {
       console.log("USEEFFECTCCCCCCCCC")
       // Måste vara == true, fungarar inte utan
       // "props.isSubmited" fungerar inte här
-      if (props.renderMode == false) {
+      if (isSubmited2 == true) {
 
-        console.log("aaaaaaa")
         sendPersonalInformation()
       }
       // sendPersonalInformation();
-      console.log(props.isSubmited)
+      console.log(isSubmited2)
       
       // fetchAvailableDatesData();
-    }, [props.isSubmited, props.renderMode]);
-  if(props.renderMode) {  
+    }, [isSubmited2]);
+  if(!isSubmited2) {  
   return (
     <>
-      <Button onClick={()=> console.log(data)} >AAAAAAAAAAAA</Button>
+      <Button onClick={()=> console.log(isSubmited2)} >AAAAAAAAAAAA</Button>
       <TextField
         id="firstname"
         label="Förnamn"
@@ -432,9 +504,18 @@ function PersonalInformation(props) {
         sx={{ margin: 2}}
         onChange={e => setExtraInfo(e.target.value)}
       />
+      <Button onClick={handleSubmit} variant="outlined" >Submit2</Button>
+ 
+      
     </>
   )}
-  return(null)
+  return(
+    <div style={{textAlign: "center"}}>
+      <DoneIcon color="success" sx={{fontSize: "200px"}} />
+      <Typography variant='h3' sx={{ color: 'success.main' }}>Success</Typography> 
+      <Typography paragraph >We received your purchase request;<br/> we'll be in touch shortly!</Typography>
+    </div>
+  )
 }
 
 
@@ -464,7 +545,7 @@ function getStepContent(props, stepIndex, isSubmited) {
     case 0:
       return (<RadioButtonsGroup selectedTimes123={props.selectedTimes123} setSelectedTimes123={props.setSelectedTimes123} availableTimes={props.availableTimes} setQuantityPeople={props.setQuantityPeople} setSelectedTime={props.setSelectedTime} />)
     case 1:
-      return (<PersonalInformation renderMode={true} isSubmited={props.isSubmited} selectedTimes123={props.selectedTimes123} isSubmited={isSubmited} date={props.date} quantityPeople={props.quantityPeople} selectedTime={props.selectedTime} />);
+      return (<PersonalInformation handleClose={props.handleClose} renderMode={true} isSubmited={props.isSubmited} selectedTimes123={props.selectedTimes123} isSubmited={isSubmited} date={props.date} quantityPeople={props.quantityPeople} selectedTime={props.selectedTime} />);
     default:
       return 'Unknown stepIndex';
   }
@@ -538,7 +619,7 @@ return (
           <Typography className={classes.instructions}>All steps completed</Typography>
           {/* <PersonalInformation isSubmited={isSubmited} date={props.date} /> */}
           {/* <Button onClick={handleReset}>Reset</Button> */}
-          <PersonalInformation renderMode={false} />
+          {/* <PersonalInformation renderMode={false} /> */}
 
           {/* <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button> */}
         </div>
