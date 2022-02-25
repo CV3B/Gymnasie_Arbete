@@ -1,59 +1,56 @@
 import React, { useEffect, useState } from 'react';
 
-import Backdrop from '@mui/material/Backdrop';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Fade from '@mui/material/Fade';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
-import TextField from '@mui/material/TextField';
+//* Mui imports *//
+import {
+  Backdrop,
+  Box,
+  Modal,
+  Fade,
+  Button,
+  Typography,
+  Divider,
+  TextField,
+  Stepper,
+  Step,
+  StepLabel,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  Checkbox,
+  IconButton
+} from "@mui/material"
+
 import DoneIcon from '@mui/icons-material/Done';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-
-import FormGroup from '@mui/material/FormGroup';
-import FormHelperText from '@mui/material/FormHelperText';
-import Checkbox from '@mui/material/Checkbox';
-
-
-import Tooltip from '@mui/material/Tooltip';
-import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
-import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateRangePicker from '@mui/lab/DateRangePicker';
 import AdapterDateFns from '@mui/lab/AdapterDayjs';
+
 import { makeStyles } from '@mui/styles';
 
-import { auth, db, logout } from "../../Firebase/Firebase";
+//* Firebase imports *//
+import { collection, query, where, getDocs, addDoc  } from "firebase/firestore";
+import AlertBar from '../../Firebase/Firebase';
+import { auth, db } from "../../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+
+//* Other imports *//
+import emailjs from '@emailjs/browser';
+
 import dayjs from "dayjs";
 
-import { isValidDay } from '../Calendar';
-
-//! "renderMode" är ett dåligt sätt att kalla funktioen för att "sendPersonalInformation" ska uppdateras, kommer inte på något bättre.
-
-// TODO Bugg: Rendera in PersonligInfo vid submit button för att den ska uppdatera isSubmited variabeln i PersonligInfo och sen skicka det till databasen
-// TODO Booking -> AddbookableDates?
-// TODO Ta bort all kod om det föra alternativ systemet för tider
-// TODO Antal personer vid bokning ska läggas till i en array ! ELLER INTE BARA ETT SÄTT ATT VÄLJA
+//* Compontenet funktionen skapar tillgängliga dagar för anvädare som vill boka tider *//
 function Booking(props) {
   const [open, setOpen] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const sendAvailableDatesInformation = async () => {
     try {
-      // let arrValidDays = [];
+      //* Modifierad funktion från "Calendar.js/isValidDay"
       const date1 = dayjs(props.value[0]).format("YYYY-MM-DD")
       const date2 = dayjs(props.value[1]).format("YYYY-MM-DD")
       const dateDiff = dayjs(date2).diff(dayjs(date1), "day")
@@ -72,18 +69,19 @@ function Booking(props) {
       
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      setAlertOpen(true);
+
     }
   };
 
   const handleApply = () => {
-    sendAvailableDatesInformation()
+    sendAvailableDatesInformation();
     props.setValue(props.value);
   }
 
   return (
     <div>
-      <Button onClick={handleOpen}>Lägg till dagar(bättre namn)</Button>
+      <Button onClick={handleOpen} variant="outlined" >Lägg till bokningsbara dagar</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -91,13 +89,9 @@ function Booking(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+          <Typography id="modal-modal-title" variant="h6" component="h2" >
+            Lägg till dagar
           </Typography>
-          <Button onClick={()=> console.log(dayjs(props.value[0]).format("YYYY-MM-DD"), dayjs(props.value[1]).format("YYYY-MM-DD"))}>aaaaaaa</Button>
-          {/* <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography> */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DateRangePicker
             startText="Check-in"
@@ -115,14 +109,15 @@ function Booking(props) {
             )}
           />
           </LocalizationProvider>
-          <Button onClick={handleApply}>Apply</Button>
+          <Button onClick={handleApply}>Tillämpa</Button>
         </Box>
       </Modal>
+      <AlertBar message={"An error occured while fetching available dates data"} open={alertOpen} setOpen={setAlertOpen} />
     </div>
   )
 };
 
-
+//* Style för "OpenBooking" element *//
 const style = {
   position: 'absolute',
   top: '50%',
@@ -136,35 +131,19 @@ const style = {
 };
 
 
-
+//* Funktionen visar alla lediga tider vid det valda datumet *//
 export function OpenBooking(props) {
   const [user, loading, error] = useAuthState(auth);
   const [open, setOpen] = useState(false);
-  const [availableTimes, setAvailableTimes] = useState()
-  const [isSubmited, setSubmit] = useState(false)
-
+  const [availableTimes, setAvailableTimes] = useState();
+  const [isSubmited, setSubmit] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
   const [quantityPeople, setQuantityPeople] = useState(0);
-  const [selectedTime, setSelectedTime] = useState();
+  const [selectedTimes, setSelectedTimes] = useState();
+
   let newObj;
-  // const getNewAvailableTimesState = () => {
 
-  //    = {...availableTimes};
-  
-  //   Object.keys(newObj).forEach(key => {
-  //     newObj[key] = false;
-  //   })
-  
-  //   return newObj;
-  // }
-
-  const [selectedTimes123, setSelectedTimes123] = useState()
-
-  
-
-  const handleOpen = () => { 
-    setOpen(true);
-    // props.fetchAvailableDatesData();
-  }
+  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const fetchAvailableTimesData = async () => {
@@ -175,37 +154,35 @@ export function OpenBooking(props) {
       querySnapshot.forEach((pDoc) => {
         setAvailableTimes(pDoc.data()["available-times"])
 
-        console.log("AVILBLE TIM", pDoc.data()["available-times"]);
       });
 
-     newObj = {...availableTimes};
+      //* Skapar ett objekt som hanterar checkboxes on/off tillstånd *//
+      newObj = {...availableTimes};
+      Object.keys(newObj).forEach(key => {
+       newObj[key] = false;
+      })
 
-     Object.keys(newObj).forEach(key => {
-      newObj[key] = false;
-     })
+     setSelectedTimes(newObj);
 
-     setSelectedTimes123(newObj)
-
-      console.log(availableTimes)
+      // console.log(availableTimes)
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      setAlertOpen(true);
+
     }
   };
 
-
-
   useEffect(() => {
-    if (loading) return;
-    fetchAvailableTimesData()
+    if(loading) return;
+    fetchAvailableTimesData();
     
-    // errorAlert()
   }, [loading]);
 
   return (
     <div>
-      {/* <Button onClick={() => console.log(availableTimes)}>aaaa</Button> */}
-      <Button onClick={handleOpen}>BOKA</Button>
+      <IconButton onClick={handleOpen}>
+      <AddCircleIcon color="primary" sx={{marginTop: "10px"}} />
+        </IconButton>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -220,91 +197,53 @@ export function OpenBooking(props) {
         <Fade in={open}>
           <Box sx={style}>
             <Typography id="transition-modal-title" variant="h6" component="h2">
-              {props.date}
+              {props.date} - 120kr per gokart åk - ett gokart åk är 10min
             </Typography>
-            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              {/* { Object.keys(availableTimes).map((time) => (
-                <Typography>{time} - {availableTimes[time]}</Typography>
-              )) } */}
-      <Button onClick={()=> console.log(selectedTimes123)}>BOKA</Button>
-              <BookingStepper handleClose={handleClose} isSubmited={isSubmited} setSubmit={setSubmit} selectedTimes123={selectedTimes123} setSelectedTimes123={setSelectedTimes123} availableTimes={availableTimes} date={props.date} quantityPeople={quantityPeople} setQuantityPeople={setQuantityPeople} selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
+            <Typography id="transition-modal-description" sx={{ mt: 2 }} component="span">
+              <BookingStepper handleClose={handleClose} isSubmited={isSubmited} setSubmit={setSubmit} selectedTimes={selectedTimes} setSelectedTimes={setSelectedTimes} availableTimes={availableTimes} date={props.date} quantityPeople={quantityPeople} setQuantityPeople={setQuantityPeople}  />
             </Typography>
           </Box>
         </Fade>
       </Modal>
+      <AlertBar message={"An error occured while fetching available times data"} open={alertOpen} setOpen={setAlertOpen} />
     </div>
   )
 }
 
-
-
+//* Funktionen hanterar de valda tiderna *//
 function RadioButtonsGroup(props) {
-
-  // * Kod bitar för att ett säkrare och mer hållbart tids system 
-  // function addStr(str, index, stringToAdd){
-  //   return str.substring(0, index) + stringToAdd + str.substring(index, str.length);
-  // }
-
-  // let newAvailableTimesArr = [];
-  // let minAvailableTime;
-  // Object.keys(props.selectedTimes123).forEach((i, k) => {
-  //   newAvailableTimesArr[k] = i.replace(':', '');
-  //   newAvailableTimesArr = newAvailableTimesArr.map(Number)
-  // });
-
-  // minAvailableTime = Math.min(...newAvailableTimesArr);
-  // minAvailableTime = String(minAvailableTime)
-  // minAvailableTime = addStr(minAvailableTime, 2, ":")
-
-  // Object.keys(props.availableTimes).map((time) => {
-  //   if(!props.selectedTimes123[time]){
-  //     const index = newAvailableTimesArr.indexOf(time.split(':', '').map(Number))
-  //     newAvailableTimesArr.splice(index, 1)
-  //   }
-  // })
-
-
-
-    const [availableSeats, setAvailableSeats] = useState([])
-    const [seatsValue, setSeatsValue] = useState(0)
-  
-  
-
+  const [availableSeats, setAvailableSeats] = useState([]);
   
   //TODO Fixa så att seatsValueConstraint fungerar, just nu uppdateras den inte när man trycker på checkboxarna
-  
-
   const handleChange = (e) => {
-    props.setSelectedTimes123({
-      ...props.selectedTimes123,
+    props.setSelectedTimes({
+      ...props.selectedTimes,
       [e.target.name]: e.target.checked,
     });
     if(e.target.checked) {
-      setAvailableSeats(prev => [...prev, props.availableTimes[e.target.name]])
+      setAvailableSeats(prev => [...prev, props.availableTimes[e.target.name]]);
 
     } else {
-      setAvailableSeats(availableSeats.filter(item => item !== props.availableTimes[e.target.name]))
+      setAvailableSeats(availableSeats.filter(item => item !== props.availableTimes[e.target.name]));
     }
   };
 
-  const maxSeatsConstraint = () => (isNaN(Math.min(...availableSeats)) ? 1 : Math.min(...availableSeats))
-  const seatsValueConstraint = (e) => (e.target.value > Math.min(...availableSeats) ? setSeatsValue(Math.min(...availableSeats)) : setSeatsValue(e.target.value))
+  const maxSeatsConstraint = () => (isNaN(Math.min(...availableSeats)) ? 1 : Math.min(...availableSeats));
+
+  //* För att man inte ska kunna boka över maxantal tillgänliga platser
+  // const seatsValueConstraint = (value) => (value > Math.min(...availableSeats) ? setSeatsValue(Math.min(...availableSeats)) : setSeatsValue(value))
 
   const handleSeatsValue = (e) => {
-    props.setQuantityPeople(e.target.value) 
-    seatsValueConstraint(e)
+    props.setQuantityPeople(e.target.value);
   }
 
   return (
     <FormControl component="fieldset">
-      {/* <FormLabel component="legend">Gender</FormLabel> */}
       <RadioGroup
-        aria-label="Tider"
+        aria-label="tider"
         name="radio-buttons-group"
         defaultValue={null}
       >
-        <Button onClick={()=> console.log()} >QQQQQQQQQQ</Button>
-        <Button onClick={()=> console.log(...availableSeats)} >GGGGGGGGGGGG</Button>
       <TextField
         id="standard-number"
         label="Platser"
@@ -318,28 +257,19 @@ function RadioButtonsGroup(props) {
         defaultValue={1}
         InputProps={{ inputProps: { min: 1, max: maxSeatsConstraint() } }}
         onChange={(e)=> handleSeatsValue(e)}
-        value={seatsValue}
       />
         
         { Object.keys(props.availableTimes).map((time) => (
-          <div>
-
+          <div key={time} >
             <Divider />
-            {/* <FormControlLabel value={time} onChange={e => props.setSelectedTime(e.target.value)} control={<Radio />} label={time} sx={{ marginTop: 2 }} /> */}
             <FormControlLabel
               control={
-                <Checkbox checked={props.selectedTimes123[time]} onChange={handleChange} name={time} />
+                <Checkbox checked={props.selectedTimes[time]} onChange={handleChange} name={time} />
               }
               label={time}
             />
-            {/* <Tooltip title="Platser kvar"> */}
-              {/* <Typography sx={{ float: "right" }} >({props.availableTimes[time]})</Typography> */}
-              
-              <Typography sx={{ display: "inline"}}>/ {props.availableTimes[time]}</Typography>
+            <Typography sx={{ display: "inline"}} component="span" >Platser kvar: {props.availableTimes[time]}</Typography>
             <Divider />
-
-        
-            {/* </Tooltip> */}
           </div>
         ))}
       </RadioGroup>
@@ -347,53 +277,32 @@ function RadioButtonsGroup(props) {
   );
 }
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
+//* Funktionen hanterar den personliga informationen som anvädaren matar in till hemsidan *//
 function PersonalInformation(props) {
-  // const [personalInfo, setPersonalInfo] = useState({})
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
-  const [epost, setEpost] = useState("")
-  const [mobileNumber, setMobileNumber] = useState("")
-  const [extraInfo, setExtraInfo] = useState("")
-  const [user, loading, error] = useAuthState(auth);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [epost, setEpost] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [extraInfo, setExtraInfo] = useState("");
+  const [isSubmited, setSubmit] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
 
-  const [isSubmited2, setSubmit2] = useState(false);
-
-  // const [openSuccessScreen, setOpenSuccessScreen] = useState(false);
-
+  //* Sparar användarens valda tider i en array om tiden är vald *//
   let selectedTimes = [];
-  if(props.renderMode) {
-    Object.keys(props.selectedTimes123).map((i, k) => {
-      // console.log("INDEX", i, k);
-      // console.log("Key", props.selectedTimes123[i])
-      if(props.selectedTimes123[i]) {
-        selectedTimes.push(Object.keys(props.selectedTimes123)[k])
-      }
-    })
-  }
-
+  Object.keys(props.selectedTimes).map((i, k) => {
+    if(props.selectedTimes[i]) {
+      selectedTimes.push(Object.keys(props.selectedTimes)[k]);
+    }
+  })
   
   const handleSubmit = () => {
-    setSubmit2(true)
-    console.log("clicked")
-    // setOpenSuccessScreen(true)
+    setSubmit(true);
+    // console.log("clicked");
     setTimeout(function() {
-      props.handleClose()
+      props.handleClose();
 
     }, 10000)
   }
-
-  // const handleClose = (event, reason) => {
-  //   if (reason === 'clickaway') {
-  //     return;
-  //   }
-
-  //   setOpenSuccessScreen(false);
-  // };
-
 
   const sendPersonalInformation = async () => {
     try {
@@ -407,120 +316,118 @@ function PersonalInformation(props) {
         qPeople: props.quantityPeople,
         selectedTime: selectedTimes   
       });
-      
-    //   await db.collection("booked-dates").add({
-    //    firstName: firstName,
-    //    lastName: lastName,
-    //    email: epost,
-    //    mobileNumber: mobileNumber,
-    //    extraInfo: extraInfo,
-    //    date: props.date,  
-    // });
-      console.log("SEND DATA LOOL")
+
     } catch (err) {
       console.error(err);
-      alert(err);
+      setAlertOpen(true);
+
     }
   };
 
-  // let endLoop = false;
-  // if(!props.renderMode && !endLoop){ 
-  //   sendPersonalInformation() 
-  //   endLoop = true;
-  // }
+  const confirmationMailData = {
+    time: props.date + " " + selectedTimes.map(x => x),
+    quantityPeople: props.quantityPeople,
+    email: epost
+  }
 
-    useEffect(() => {
-      // if (loading) return;
-      console.log("USEEFFECTCCCCCCCCC")
-      // Måste vara == true, fungarar inte utan
-      // "props.isSubmited" fungerar inte här
-      if (isSubmited2 == true) {
+  const sendConfirmationMail = () => {
+    emailjs.send('service_4pon2so', 'template_6azjfid', confirmationMailData, 'user_OvRVESz4UKcl3nNG4n3G7')
+    .then((result) => {
+        console.log(result.text);
+    }, (error) => {
+        console.log(error.text);
+    })
+  }
 
-        sendPersonalInformation()
-      }
-      // sendPersonalInformation();
-      console.log(isSubmited2)
-      
-      // fetchAvailableDatesData();
-    }, [isSubmited2]);
-  if(!isSubmited2) {  
-  return (
-    <>
-      <Button onClick={()=> console.log(isSubmited2)} >AAAAAAAAAAAA</Button>
-      <TextField
-        id="firstname"
-        label="Förnamn"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="standard"
-        size="small"
-        sx={{ margin: 2}}
-        onChange={e => setFirstName(e.target.value)}
-      />
-      <TextField
-        id="lastname"
-        label="Efternamn"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="standard"
-        size="small"
-        sx={{ margin: 2}}
-        onChange={e => setLastName(e.target.value)}
-      />
-      <TextField
-        id="epost"
-        label="Epost"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="standard"
-        size="small"
-        sx={{ margin: 2}}
-        onChange={e => setEpost(e.target.value)}
-      />
-      <TextField
-        id="mobile-number"
-        label="Telefon nummer"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="standard"
-        size="small"
-        sx={{ margin: 2}}
-        onChange={e => setMobileNumber(e.target.value)}
-      />
-      <TextField
-        id="extra-info"
-        label="Extra information"
-        multiline
-        maxRows={4}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="standard"
-        size="small"
-        sx={{ margin: 2}}
-        onChange={e => setExtraInfo(e.target.value)}
-      />
-      <Button onClick={handleSubmit} variant="outlined" >Submit2</Button>
- 
-      
-    </>
-  )}
-  return(
-    <div style={{textAlign: "center"}}>
-      <DoneIcon color="success" sx={{fontSize: "200px"}} />
-      <Typography variant='h3' sx={{ color: 'success.main' }}>Success</Typography> 
-      <Typography paragraph >We received your purchase request;<br/> we'll be in touch shortly!</Typography>
-    </div>
-  )
+  useEffect(() => {
+    //* Går inte att tabort "... == true", fungerar inte då *//
+    if(isSubmited == true) {
+      sendPersonalInformation();
+      sendConfirmationMail();
+    }
+    
+  }, [isSubmited]);
+
+  if(!isSubmited) {  
+    return (
+      <div>
+        <TextField
+          id="firstname"
+          label="Förnamn"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="standard"
+          size="small"
+          sx={{ margin: 2}}
+          onChange={e => setFirstName(e.target.value)}
+          required
+        />
+        <TextField
+          id="lastname"
+          label="Efternamn"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="standard"
+          size="small"
+          sx={{ margin: 2}}
+          onChange={e => setLastName(e.target.value)}
+          required
+        />
+        <TextField
+          id="epost"
+          type="email"
+          label="Epost"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="standard"
+          size="small"
+          sx={{ margin: 2}}
+          onChange={e => setEpost(e.target.value)}
+          required
+        />
+        <TextField
+          id="mobile-number"
+          label="Telefon nummer"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="standard"
+          size="small"
+          sx={{ margin: 2}}
+          onChange={e => setMobileNumber(e.target.value)}
+          required
+        />
+        <TextField
+          id="extra-info"
+          label="Extra information"
+          multiline
+          maxRows={4}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="standard"
+          size="small"
+          sx={{ margin: 2}}
+          onChange={e => setExtraInfo(e.target.value)}
+        />
+        <Button onClick={handleSubmit} variant="contained" sx={{margin: 2, width: "30.4%" }} color="secondary" >Skicka</Button>
+        <AlertBar message={"An error occured while fetching data"} open={alertOpen} setOpen={setAlertOpen} />
+      </div>
+    )}
+    return(
+      <div style={{textAlign: "center"}}>
+        <DoneIcon color="success" sx={{fontSize: "200px"}} />
+        <Typography variant='h3' sx={{ color: 'success.main' }} component="span" >Skickat!</Typography> 
+        <Typography paragraph component="span" >Bokningsbekräftelse har skickats till din mail</Typography>
+      </div>
+    )
 }
 
 
-//* Booking Stepper *//
-
+//* Booking Stepper style *//
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -534,50 +441,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
+//* Stegens titlar *//
 function getSteps() {
   return ['Tider', 'Din information'];
 }
 
 function getStepContent(props, stepIndex, isSubmited) {
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAA",props)
   switch (stepIndex) {
     case 0:
-      return (<RadioButtonsGroup selectedTimes123={props.selectedTimes123} setSelectedTimes123={props.setSelectedTimes123} availableTimes={props.availableTimes} setQuantityPeople={props.setQuantityPeople} setSelectedTime={props.setSelectedTime} />)
+      return (<RadioButtonsGroup selectedTimes={props.selectedTimes} setSelectedTimes={props.setSelectedTimes} availableTimes={props.availableTimes} setQuantityPeople={props.setQuantityPeople} />)
     case 1:
-      return (<PersonalInformation handleClose={props.handleClose} renderMode={true} isSubmited={props.isSubmited} selectedTimes123={props.selectedTimes123} isSubmited={isSubmited} date={props.date} quantityPeople={props.quantityPeople} selectedTime={props.selectedTime} />);
+      return (<PersonalInformation handleClose={props.handleClose} isSubmited={props.isSubmited} selectedTimes={props.selectedTimes} date={props.date} quantityPeople={props.quantityPeople} />);
     default:
       return 'Unknown stepIndex';
   }
 }
 
-
-//* För att expandera till ett system där det går att välja flera tider att boka *//
-// const getNewAvailableTimesState = (props) => {
-
-//   let newObj = {...props.availableTimes};
-
-//   Object.keys(newObj).forEach(key => {
-//     newObj[key] = false;
-//   })
-
-//   return newObj;
-// }
-
-
+//* Funktionen hanterar alla steg under bokningen *// 
 function BookingStepper(props) {
 const [activeStep, setActiveStep] = useState(0);
+
 const steps = getSteps();
 const classes = useStyles();
-
-
-
-
-// const listtest = () => {
-//   let l = {}
-//   Object.keys(props.availableTimes).map((time) =>  l = {time: false**-} ))
-
-// }
 
 const handleNext = () => {
   setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -587,20 +472,19 @@ const handleBack = () => {
   setActiveStep((prevActiveStep) => prevActiveStep - 1);
 };
 
-const handleReset = () => {
-  setActiveStep(0);
-};
+// const handleReset = () => {
+//   setActiveStep(0);
+// };
 
 const handleSubmit = () => {
   props.setSubmit(true);
 }
 
-const handleSubnNxt = (e) => {
-  handleNext();
-  handleSubmit();
+// const handleSubnNxt = (e) => {
+//   handleNext();
+//   handleSubmit();
   
-  
-}
+// }
 
 return (
   <div className={classes.root}>
@@ -612,20 +496,13 @@ return (
       ))}
     </Stepper>
     <div>
-      <Button onClick={()=> console.log(props.isSubmited)}>AAAAAA</Button>
-      <Button onClick={()=> console.log(props)}>BBBBBB</Button>
       {activeStep === steps.length ? (
         <div>
-          <Typography className={classes.instructions}>All steps completed</Typography>
-          {/* <PersonalInformation isSubmited={isSubmited} date={props.date} /> */}
-          {/* <Button onClick={handleReset}>Reset</Button> */}
-          {/* <PersonalInformation renderMode={false} /> */}
-
-          {/* <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button> */}
+          <Typography className={classes.instructions} component="span" >Alla steg klara</Typography>
         </div>
       ) : (
         <div>
-          <Typography className={classes.instructions}>{getStepContent(props, activeStep, props.date)}</Typography>
+          <Typography className={classes.instructions} component="span">{getStepContent(props, activeStep, props.date)}</Typography>
           <div>
             <Button
               disabled={activeStep === 0}
@@ -635,13 +512,10 @@ return (
               Back
             </Button>
             {activeStep === steps.length - 2 ? (<Button variant="contained" color="primary" onClick={handleNext} >Next</Button>) : null }
-              {/* {activeStep === steps.length - 1 ? 'Finish' : 'Next'} */}
-              {/* Next */}
-            
-            {activeStep === steps.length - 1 ? (
+            {/* {activeStep === steps.length - 1 ? (
             <Button id="submit-btn" variant="contained" color="primary" onClick={handleSubnNxt} >
               Submit
-            </Button>) : null}
+            </Button>) : null} */}
           </div>
         </div>
       )}
@@ -649,8 +523,5 @@ return (
   </div>
 );
 };
-
-
-
 
 export default Booking;

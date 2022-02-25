@@ -4,8 +4,6 @@
 
 .App {
   text-align: center;
-  padding-left: 100px;
-  padding-right: 100px;
 }
 
 .App-logo {
@@ -40,5 +38,13 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media only screen and (min-width: 1200px){
+  .App {
+    text-align: center;
+    padding-left: 120px;
+      padding-right: 120px;
   }
 }

@@ -1,10 +1,10 @@
 import {useState} from 'react';
+
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import "./Faq.css";
@@ -28,7 +28,6 @@ function Faq() {
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
             Fråga 1
           </Typography>
-          {/* <Typography sx={{ color: 'text.secondary' }}>I am an accordion</Typography> */}
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -46,9 +45,6 @@ function Faq() {
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
             Fråga 2
           </Typography>
-          {/* <Typography sx={{ color: 'text.secondary' }}>
-            You are currently not an owner
-          </Typography> */}
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
@@ -67,9 +63,6 @@ function Faq() {
           <Typography sx={{ width: '33%', flexShrink: 0 }}>
             Fråga 3
           </Typography>
-          {/* <Typography sx={{ color: 'text.secondary' }}>
-            Filtering has been entirely disabled for whole web server
-          </Typography> */}
         </AccordionSummary>
         <AccordionDetails>
           <Typography>

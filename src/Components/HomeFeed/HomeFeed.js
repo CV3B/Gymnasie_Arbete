@@ -1,54 +1,47 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
+//* MUI imports *//
 import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
 import Button from "@mui/material/Button";
-import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
 
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import EmailIcon from '@mui/icons-material/Email';
+import { makeStyles } from '@mui/styles';
 
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-
+//* Image imports *//
 import gokart_on_track from "../../Images/gokart_on_track.jpg";
 import closeup_gokart from "../../Images/closeup_gokart.jpg";
 import helemt from "../../Images/helemt.jpg";
 
-import { makeStyles } from '@mui/styles';
 
-
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  useRouteMatch,
-  useParams,
-  useHistory 
-} from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 
 import './HomeFeed.css';
-import { height } from '@mui/system';
 
 const useStyles = makeStyles((theme) => ({
   paperBg: {
     background: "#1e88e5",
     height: "150px",
-    // width: "100px"
-  }
+  },
+  whiteTextColor: {
+    color: "white",
+    fontWeight: "bold",
+    textTransform: "uppercase",
+  },
+  whiteBackgroundColor: {
+    backgroundColor: "white",
+    marginTop: "20px"
+  },
+
 }));
 
+
+
 function HomeFeed() {
-  const classes = useStyles()
+  const classes = useStyles();
+  
   return(
     <div className="container">
       <div className="item">
@@ -58,49 +51,45 @@ function HomeFeed() {
           alt="topImg"
         />
         <div className="btn-bg">
-          <Typography gutterBottom variant="h3" component="div" sx={{ color: "#ffc400", fontWeight: "bold",}} >GOKART NAMN</Typography>
-          <Button className="big-img-btn" variant="contained" color="primary" component={Link} to="/booking"><span className="aa">BOKA HÄR</span></Button>
+          <Typography gutterBottom variant={window.matchMedia("(max-width: 600px)").matches ? "h4" : "h3"} component="div" className='site-name' sx={{ color: "#ffc400", fontWeight: "bold",}} >GOKART ÖSTRAHAMNGATAN</Typography>
+          <Typography gutterBottom variant="h5" component="div" className='site-name' sx={{ color: "#ffc400", fontWeight: "bold",}} >120kr per gokart åk - ett gokart åk är 10min</Typography>
+          <Button className="big-img-btn" size="large" variant="contained" color="primary" component={Link} to="/bokning">BOKA HÄR</Button>
         </div>
-        
       </div>
 
       <div className="item">
         <Paper className="container paper-bg" sx={{background: "#1e88e5"}} elevation={10} >
           <div className="contact-item">
-            <IconButton sx={{ color: "white" }} >
+            <IconButton color="white" sx={{marginTop: "5px"}} component={Link} to="/kontakta" >
               <LocationOnIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "white" }}>ADRESS</Typography>
-            <Typography ariant="subtitle1" sx={{ color: "white" }}>GATENAMN 9</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor}>ADRESS</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>Östrahamngatan 13</Typography>
           </div>
           <div className="contact-item">
-            <IconButton sx={{ color: "white" }} >
+            <IconButton color="white" sx={{marginTop: "5px"}} component={Link} to="/kontakta" >
               <LocalPhoneIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "white" }}>TELEFON</Typography>
-            <Typography ariant="subtitle1" sx={{ color: "white" }}>0704123456</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor}>TELEFON</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>0704123456</Typography>
           </div>
           <div className="contact-item">
-            <IconButton sx={{ color: "white" }} >
+            <IconButton color="white" sx={{marginTop: "5px"}} component={Link} to="/kontakta" >
               <EmailIcon fontSize="large" />
             </IconButton>
-            <Typography variant="h6" sx={{ color: "white" }}>EMAIL</Typography>
-            <Typography ariant="subtitle1" sx={{ color: "white" }}>info@contact.com</Typography>
+            <Typography variant="h6" className={classes.whiteTextColor}>EMAIL</Typography>
+            <Typography variant="subtitle1" className={classes.whiteTextColor}>gokart.gymnasiearbete@gmail.com</Typography>
           </div>
         </Paper>
 
       </div>
 
-
-      {/* <Paper className={classes.paperBg} elevation={6} >aaa</Paper> */}
-
-
       <div className="item">
         <img 
           src={closeup_gokart}
           className="temp"
-          alt="bottomRightImg"
-          id="1bottomRightImg"
+          alt="bottomLeftImg"
+          id="bottomLeftImg"
         />
         <Button id="about-gokart-btn" className="small-img-btn" variant="contained" component={Link} to="/gokarts">Våra Gokarts</Button>
       </div>
@@ -109,9 +98,9 @@ function HomeFeed() {
           src={helemt}
           className="temp"
           alt="bottomRightImg"
-          id="2bottomRightImg"
+          id="bottomRightImg"
         />
-        <Button id="faq-btn" className="small-img-btn" variant="contained">Frågor & Svar</Button>
+        <Button id="faq-btn" className="small-img-btn" variant="contained" component={Link} to="/fragor-och-svar" >Frågor & Svar</Button>
       </div>
     </div>
   )

@@ -52,7 +52,7 @@
 .scrolled {
   position: fixed;
   top: 0;
-  max-width: calc(100% - 200px);
+  /* max-width: calc(100% - 200px); */
   /* left: 0; */
   background-color: rgb(255, 255, 255);
 }
@@ -61,4 +61,30 @@
   height: 100%;
 } */
 
+@media only screen and (min-width: 1200px){
+  .scrolled {
+    position: fixed;
+    top: 0;
+    max-width: calc(100% - 240px);
+    /* left: 0; */
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+@media only screen and (max-width: 600px){
+  .scrolled {
+    position: static;
+    top: 0;
+    /* max-width: calc(100% - 300px); */
+    /* left: 0; */
+    background-color: rgb(255, 255, 255);
+  }
+
+  .nav-container {
+    display: flex;
+    align-items: center;
+    width: 0;
+   
+  }
+}
 

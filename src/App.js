@@ -1,4 +1,6 @@
-import './App.css';
+import React from "react";
+
+//* Components imports *//
 import Calendar from './Components/Calendar/Calendar';
 import Navbar from './Components/Navbar/Navbar';
 import Footer from './Components/Footer/Footer';
@@ -10,35 +12,32 @@ import Faq from "./Components/OtherPages/Faq/Faq";
 import TrackInfo from "./Components/OtherPages/TrackInfo/TrackInfo";
 import AboutUs from "./Components/OtherPages/AboutUs/AboutUs";
 import Contact from './Components/OtherPages/Contact/Contact';
-
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from './Components/Login/Login';
 import Reset from './Components/Reset/Reset';
 import Register from './Components/Register/Register';
+
+//* React router dom imports *//
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+//* Mui imports *//
 import {ThemeProvider, createTheme} from "@mui/material/styles";
 import { Paper } from '@mui/material';
-// import theme from './Components/Theme/';
 
-//! TA BORT
-import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useHistory } from "react-router";
-import { auth, db, logout } from "./Components/Firebase/Firebase";
-
+//* Css imports *//
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-//* Inställningar kan man ändra på tiderna som är default
+import './App.css';
 
-// TODO Titta på alla CSS namn så att det inte finns två av samma
-// TODO Link är bara på ett eller flera ord, istället för hela meningen (Login, Register)
-////  Skicka mail via kontakt sidan
-////  DB spara antal personer samt visa de i "Bokningar", sök ruta?
-//? Sök ruta i Bokingar
-//// Beställa x antal åk 
-// TODO Rensa DB ifall tom eller x dagar
+
+//* Inställningar: det går att ändra på tiderna som är till andra tider och ta bort tider
+
+// TODO "" ''
+// TODO imports if() if () ID NAM ... - ...
+
+//* Färg temat för hemsidan *//
 const theme = createTheme({
   palette: {
     primary: {
@@ -53,18 +52,14 @@ const theme = createTheme({
     },
     white: {
       main: "#ffffff"
+    },
+    darkGrey: {
+      main: "#474747"
     }
   }
 });
 
-/*
-light
-main #454F4F
-dark #394141
-*/
-
 function PaperBackground(props){
-
   const { text } = props
 
   return(
@@ -75,18 +70,15 @@ function PaperBackground(props){
 }
 
 function App() {
-
   return (
     <div className="App">
+      
       <ThemeProvider theme={theme}>
-        {/* <Calendar /> */}
-        {/* <HomeFeed /> */}
         <Router>
           <Navbar />
             <Switch>
               <Route exact path="/" >
                 <HomeFeed/>
-                {/* <Footer /> */}
               </Route>
               <Route exact path="/login" >
                 <Login />
@@ -95,18 +87,15 @@ function App() {
                 <Reset />
               </Route>
               <Route exact path="/register" component={Register} />
-              <Route exact path="/booking" >
-              <PaperBackground text={
-                  <Calendar editMode={false} />
-                } />
-                
+              <Route exact path="/bokning" >
+                <Calendar editMode={false} />
               </Route>
-              <Route exact path="/contact" >
+              <Route exact path="/kontakta" >
                 <PaperBackground text={
                   <Contact />
                 } />
               </Route>
-              <Route exact path="/about_us" >
+              <Route exact path="/om-oss" >
                 <AboutUs />
               </Route>
               <Route exact path="/gokarts" >
@@ -114,10 +103,10 @@ function App() {
                   <AboutGokarts />
                 } />
               </Route>
-              <Route exact path="/faq" >
+              <Route exact path="/fragor-och-svar" >
                 <Faq />
               </Route>
-              <Route exact path="/tracks" >
+              <Route exact path="/banor" >
                 <PaperBackground text={
                   <TrackInfo />
                 } />
@@ -127,7 +116,7 @@ function App() {
               </Route>
               <Route exact path="/dashboard/admin_panel" component={AdminPanel} />
             </Switch>
-            {/* <Footer /> */}
+            <Footer />
         </Router>
       </ThemeProvider>
     </div>

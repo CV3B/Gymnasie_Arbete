@@ -93,3 +93,10 @@
   /* border-bottom: solid thin; */
 }
 
+@media only screen and (max-width: 600px){
+  .contact-page-item {
+    width: 100%;
+    margin-bottom: 2%;
+  
+  }
+}

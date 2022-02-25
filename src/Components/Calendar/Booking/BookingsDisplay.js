@@ -1,217 +1,133 @@
 import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
-import { auth, db, logout } from "../../Firebase/Firebase";
+
+//* Firebase imports *//
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { auth, db } from "../../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Paper, Typography, Button } from '@mui/material';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListSubheader from '@mui/material/ListSubheader';
+import AlertBar from "../../Firebase/Firebase";
 
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+//* Mui imports *//
+import MUIDataTable from "mui-datatables";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
+//* CSS imports *//
 import "./BookingsDisplay.css";
 
-
-const columns = [
-  { id: 'pBookedDate', label: 'Bokat datum', minWidth: 100 },
-  { id: 'pName', label: 'Namn', minWidth: 100 },
-  {
-    id: 'pEmail',
-    label: 'Email',
-    // minWidth: 170,
-    // align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'pMobileNumber',
-    label: 'Mobilnummer',
-    // minWidth: 170,
-    // align: 'right',
-    // format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'pExtraInfo',
-    label: 'Extra information',
-    // minWidth: 110,
-    // align: 'right',
-    // format: (value) => value.toFixed(2),
-  },
-];
-
-function createData(pBookedDate, pName, pEmail, pMobileNumber, pExtraInfo) {
-  return { pBookedDate, pName, pEmail, pMobileNumber, pExtraInfo };
-}
-
-  
-
-
 function BookingDisplay() {
-  const [bookings, setBookings] = useState({});
+  const [bookedDate, setBookedDate] = useState([]);
   const [name, setName] = useState([]);
   const [email, setEmail] = useState([]);
   const [mobileNumber, setMobileNumber] = useState([]);
-  const [bookedDate, setBookedDate] = useState([]);
+  const [quantityPeople, setQuantityPeople] = useState([]);
+  const [selectedTime, setSelectedTime] = useState([]);
   const [extraInfo, setExtraInfo] = useState([]);
+  const [user, loading, error] = useAuthState(auth);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [backdropOpen, setBackdropOpen] = useState(true);
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const columns = [
+    { 
+      name: 'bookedDate', 
+      label: 'Bokat datum', 
+    },
+    { 
+      name: 'name', 
+      label: 'Namn',
+    },
+    {
+      name: 'email',
+      label: 'Email',
+    },
+    {
+      name: 'mobileNumber',
+      label: 'Mobilnummer',
+    },
+    {
+      name: 'quantityPeople',
+      label: 'Antal personer',
+    },
+    {
+      name: 'selectedTime',
+      label: 'Tider',
+    },
+    {
+      name: 'extraInfo',
+      label: 'Extra information',
+    },
+  ];
+  
+  function createData(pBookedDate, pName, pEmail, pMobileNumber, pQuantityPeople, pSelectedTime, pExtraInfo) {
+    return { bookedDate: pBookedDate, name: pName, email: pEmail, mobileNumber: pMobileNumber, quantityPeople: pQuantityPeople, selectedTime: pSelectedTime, extraInfo: pExtraInfo };
+  }
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const rows = bookedDate.map((i, k) => {
-    // return [bookedDate[k], name[k], email[k], mobileNumber[k], extraInfo[k]]
-    return createData(bookedDate[k], name[k], email[k], mobileNumber[k], extraInfo[k])
+  const data = bookedDate.map((i, k) => {
+    return createData(bookedDate[k], name[k], email[k], mobileNumber[k], quantityPeople[k], (selectedTime[k] + " "), extraInfo[k])
   })
 
-
-  const [user, loading, error] = useAuthState(auth);
+  
 
   const fetchBookedData = async () => {
     try {
-      const q = query(collection(db, "booked-dates"), where("date", "!=", ""))
+      const q = query(collection(db, "booked-dates"), where("date", "!=", "")) // För att lättare kunna se alla bokingar ska det vara: where("date", "==", "currentDate") men har inte igång nu, för att lättare visa hur det fungerar. Detta kommer också hämta datan snabbare.
 
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((pDoc) => {
-        setBookings(prev => [prev, pDoc.data()])
-        setName(prev => [...prev, pDoc.data().firstName +" "+ pDoc.data().lastName])
-        setBookedDate(prev => [...prev, pDoc.data().date])
-        setEmail(prev => [...prev, pDoc.data().email])
-        setExtraInfo(prev => [...prev, pDoc.data().extraInfo])
-        setMobileNumber(prev => [...prev, pDoc.data().mobileNumber])       
-          
-        console.log("AVILBLE BOOKINS", pDoc.data());
+        setBackdropOpen(true);
+        setBookedDate(prev => [...prev, pDoc.data().date]);
+        setName(prev => [...prev, pDoc.data().firstName +" "+ pDoc.data().lastName]);
+        setEmail(prev => [...prev, pDoc.data().email]);
+        setMobileNumber(prev => [...prev, pDoc.data().mobileNumber]);
+        setQuantityPeople(prev => [...prev, pDoc.data().qPeople]); 
+        setSelectedTime(prev => [...prev, pDoc.data().selectedTime]);
+        setExtraInfo(prev => [...prev, pDoc.data().extraInfo]);
+
       });
+      setBackdropOpen(false);
 
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      setAlertOpen(true);
+
     }
   };
 
-  useEffect(() => {
-      if (loading) return;
-      fetchBookedData()
+  //* Används för att senare kunna redera rader i MUIDataTable, som sedan raderar den raden i databasen *//
+  // const handleOnRowsDelete = (e) => {
+  //   console.log(e)
+  // }
 
-      // errorAlert()
+  const options = {
+    filter: true,
+    filterType: "dropdown",
+    responsive: "vertical",
+    tableBodyHeight: '656px',
+    // onRowsDelete: (e)=> handleOnRowsDelete(e),
+  };
+
+  useEffect(() => {
+    if(loading) return;
+
+    fetchBookedData();
   }, [loading]);
   return(
-    // Object.keys(bookings.map((bookedData) => (
-    //   <Paper className="bookings-paper">
-    //     <Typography>{bookings[bookedData]}</Typography>
-    //     <Button onClick={()=> console.log(bookings)}>AAAAA</Button>
-    //   </Paper>
-    // ))
-    // )
-<>
-{/* <Button onClick={()=> console.log(rows)}>aaaaaaaa</Button> */}
-    {/* <List
-      sx={{
-        width: '100%',
-        maxWidth: "100%",
-        bgcolor: 'background.paper',
-        position: 'relative',
-        overflow: 'auto',
-        maxHeight: "100%",
-      }}
-      subheader={<li />}
-    > */}
+  <>
+    <MUIDataTable
+      title={"Bookings List"}
+      data={data}
+      columns={columns}
+      options={options}
       
-      {/* {
-        bookedDate.map((i, k) => (
-          <ListItem>
-          <Paper elevation={12} className="bookings-paper">
-            <Typography>{bookedDate[k]}</Typography>
-            <Typography>{name[k]}</Typography>
-            <Typography>{email[k]}</Typography>
-            <Typography>{mobileNumber[k]}</Typography>
-            <Typography>{extraInfo[k]}</Typography>
-    
-            </Paper>
-            </ListItem>
-
-          ))
-        }
-      </List> */}
-
-  <TableContainer sx={{ maxHeight: 440 }}>
-  <Table stickyHeader aria-label="sticky table">
-    <TableHead>
-      <TableRow>
-        {columns.map((column) => (
-          <TableCell
-            key={column.id}
-            align={column.align}
-            style={{ minWidth: column.minWidth }}
-          >
-            {column.label}
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {rows
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .map((row) => {
-          return (
-            <TableRow hover role="checkbox" tabIndex={-1} key={row.pBookedDate}>
-              {columns.map((column) => {
-                const value = row[column.id];
-                return (
-                  <TableCell key={column.id} align={column.align}>
-                    {column.format && typeof value === 'number'
-                      ? column.format(value)
-                      : value}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          );
-        })}
-    </TableBody>
-  </Table>
-  </TableContainer>
-  <TablePagination
-  rowsPerPageOptions={[10, 25, 100]}
-  component="div"
-  count={rows.length}
-  rowsPerPage={rowsPerPage}
-  page={page}
-  onPageChange={handleChangePage}
-  onRowsPerPageChange={handleChangeRowsPerPage}
-  />
-
-
+    />
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={backdropOpen}
+    >
+      <CircularProgress color="inherit" />
+    </Backdrop>
+    <AlertBar message={"An error occured while fetching booking data"} open={alertOpen} setOpen={setAlertOpen} />
   </>
-
-      // bookedDate.map((i, k) => (
-      //   <Paper elevation={12} className="bookings-paper">
-    //     <Typography>{bookedDate[k]}</Typography>
-    //     <Typography>{name[k]}</Typography>
-    //     <Typography>{email[k]}</Typography>
-    //     <Typography>{mobileNumber[k]}</Typography>
-    //     <Typography>{extraInfo[k]}</Typography>
-
-    //   </Paper>
-    // ))
-    
-    // <div>
-    //   <Button onClick={()=> console.log(bookedDate)}>AAAAA</Button>
-    // </div>
-  )
+  );
 }
 
 export default BookingDisplay;

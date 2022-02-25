@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Paper, Button, Typography, TextField } from "@mui/material";
+
+//* Firebase imports *//
+import { auth, registerWithEmailAndPassword } from "../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import AlertBar from "../Firebase/Firebase";
+
+//* Other imports *//
+import { Paper, Button, Typography, TextField } from "@mui/material";
+
 import { Link, useHistory } from "react-router-dom";
-import {
-  auth,
-  registerWithEmailAndPassword,
-} from "../Firebase/Firebase";
+
 import "./Register.css";
 
 function Register() {
@@ -13,22 +17,26 @@ function Register() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [user, loading, error] = useAuthState(auth);
+  const [alertOpen, setAlertOpen] = useState(false);
+
   const history = useHistory();
 
   const register = () => {
-    if (!name) alert("Please enter name");
+    if(!name) setAlertOpen(true);
     registerWithEmailAndPassword(name, email, password);
+
   };
 
   useEffect(() => {
-    if (loading) return;
-    if (user) history.replace("/dashboard");
+    if(loading) return;
+    if(user) history.replace("/dashboard");
+    
   }, [user, loading]);
 
   return (
     <Paper elevation={12} className="register">
       <div className="register-container">
-        <Typography variant="h3" >Register</Typography>
+        <Typography variant="h3" >REGISTER</Typography>
         <TextField
           type="text"
           className="register-item"
@@ -36,15 +44,14 @@ function Register() {
           onChange={(e) => setName(e.target.value)}
           placeholder="Full Name"
           variant="standard"
-
         />
         <TextField
-          type="text"
+          type="email"
           className="register-item"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="E-mail Address"
-        variant="standard"
+          variant="standard"
 
         />
         <TextField
@@ -59,16 +66,11 @@ function Register() {
         <Button variant="contained" className="register-item" onClick={register} >
           Register
         </Button>
-        {/* <button
-          className="register__btn register__google"
-        >
-          Register with Google
-        </button> */}
-
-        <Typography className="register-item"  >
-          Already have an account? <Link to="/" style={{ textDecoration: 'none', color: "inherit" }}>Login</Link> now.
+        <Typography className="register-item" >
+          <Link to="/" style={{ textDecoration: 'none', color: "inherit" }}>Already have an account? Login now.</Link> 
         </Typography>
       </div>
+      <AlertBar message={"Please enter name"} open={alertOpen} setOpen={setAlertOpen} />
     </Paper>
   );
 }

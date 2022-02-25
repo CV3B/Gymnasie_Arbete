@@ -1,47 +1,63 @@
-import React, { useEffect, useState } from "react";
-import closeup_gokart from "../../../Images/closeup_gokart.jpg";
-import { Typography, Paper } from "@mui/material";
+import React from "react";
+import { Typography } from "@mui/material";
+import racelineLight from "../../../Images/raceline-light.png";
 
 import "./AboutGokarts.css";
-// import { typography } from "@mui/system";
 
 function AboutGokarts() {
 
   return(
     <div>
-      <div class="info-container">
-        <div class="info-img-container">
-          <img src={closeup_gokart} alt="a" className="info-img"/>
+      <div className="info-container">
+        <div className="info-img-container">
+          <img src={racelineLight} alt="gokart-img1" className="info-img" />
         </div>
-        <div class="product-info">
-          <div class="info-text">
-            <Typography variant="h5" className="info-title" sx={{fontWeight: "bold"}}>Gokart 1</Typography>
+        <div className="product-info">
+          <div className="info-text">
+            <Typography variant="h5" className="info-title" sx={{fontWeight: "bold", textAlign: "justify"}}>Praga Raceline Light</Typography>
             <Typography variant="subtitle1" className="info-desc" >
               <dl>  
-                <dt>Hästkrafter:</dt>  
-                <dd>12bhp</dd>  
+                <dt>Hästkrafter: </dt>  
+                <dd>12hp</dd>
+                <dt>Motor:</dt>  
+                <dd>Tillotson 350</dd>
+                <dt>Vikt: </dt>  
+                <dd>119kg</dd>  
+                <dt>Säte: </dt>  
+                <dd>Justerbart</dd> 
+                <dt>Pedaler: </dt>  
+                <dd>Justerbart</dd>
               </dl> 
             </Typography>
           </div>
         </div>
       </div>
-      <div class="info-container">
-      <div class="info-img-container">
-        <img src={closeup_gokart} alt="a" className="info-img" />
+
+      <div className="info-container">
+      <div className="info-img-container">
+        <img src={racelineLight} alt="gokart-img2" className="info-img" />
       </div>
-      <div class="product-info">
-        <div class="info-text">
-          <Typography variant="h5" className="info-title" sx={{fontWeight: "bold"}}>Gokart 2</Typography>
+      <div className="product-info">
+        <div className="info-text">
+          <Typography variant="h5" className="info-title" sx={{fontWeight: "bold", textAlign: "justify"}}>Praga Raceline Light</Typography>
           <Typography variant="subtitle1" className="info-desc" >
             <dl>  
               <dt>Hästkrafter:</dt>  
-              <dd>12bhp</dd>  
+              <dd>12hp</dd>
+              <dt>Motor:</dt>  
+              <dd>Tillotson 350</dd>
+              <dt>Vikt:</dt>  
+              <dd>119kg</dd>  
+              <dt>Säte:</dt>  
+              <dd>Justerbart</dd> 
+              <dt>Pedaler:</dt>  
+              <dd>Justerbart</dd> 
             </dl> 
           </Typography>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   )
 }
 

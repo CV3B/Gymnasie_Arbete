@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+
+//* Firebase imports *// 
 import { auth, db } from "../Firebase/Firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import AlertBar from "../Firebase/Firebase";
 
+//* React router imports *//
+import { useHistory } from "react-router";
 
+//* Det går bara att kommer åt detta element om anvädaren har rolen "admin" *//
 function AdminPanel() {
-
+  const [alertOpen, setAlertOpen] = useState(false);
   const [user, loading, error] = useAuthState(auth);
-  const history = useHistory();
   const [isAdmin, setIsAdmin] = useState(true);
+
+  const history = useHistory();
 
   const fetchUserData = async () => {
     try {
@@ -19,11 +25,10 @@ function AdminPanel() {
       querySnapshot.forEach((pDoc) => {
         setIsAdmin(pDoc.roles.Admin);
       });
-      // console.log("FUNC ROLE: " + !data.roles.Admin);
-      // console.log(data);
+      
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      setAlertOpen(true)
     }
   };
   
@@ -34,9 +39,11 @@ function AdminPanel() {
     fetchUserData()
   }, [isAdmin, loading]);
 
+  console.log(error)
   return(
     <div>
       <h1>ADMIN PANEL</h1>
+      <AlertBar message={"An error occured while fetching user data"} open={alertOpen} setOpen={setAlertOpen} />
     </div>
   )
 }

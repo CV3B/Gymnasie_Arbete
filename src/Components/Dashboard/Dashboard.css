@@ -1,5 +1,7 @@
 .dashboard {
   height: 773px;
+  /* height: 100%; */
+
   /* padding: 16px; */
   margin-left: 175px;
   /* padding-top: 18px; */
@@ -7,7 +9,7 @@
 
 .first-dashboard-container {
   height: 773px;
-  
+  /* height: 100%; */
 }
 
 .dashboard .reset {
@@ -44,10 +46,6 @@
   /* list-style-type: none; */
   /* padding-bottom:5.5em; */
   }
-
-.dashtest {
-  margin-left: 30px; /* ALIGN PÅ ETT BÄTTRE SÄTT */
-}
 
 .sidenav a {
   padding: 8px 8px 8px 8px;

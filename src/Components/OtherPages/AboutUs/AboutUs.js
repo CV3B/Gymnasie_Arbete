@@ -1,7 +1,9 @@
-// function AboutUs() {
-//   return(
-    
-//   )
-// }
+import { Typography } from "@mui/material";
 
-// export default AboutUs;
+function AboutUs() {
+  return(
+    <Typography variant="h5" >Under konstruktion</Typography>
+  )
+}
+
+export default AboutUs;

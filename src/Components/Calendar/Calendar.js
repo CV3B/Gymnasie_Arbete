@@ -1,19 +1,28 @@
 import React, {useState, useEffect} from 'react';
-import dayjs from "dayjs";
-import "./Calendar.css";
-import { Typography } from '@mui/material';
-import Card from '@mui/material/Card';
-import { Button, CardActionArea, Paper } from '@mui/material';
+
+//* MUI imports *//
+import { Paper, Typography } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from '@mui/material/Backdrop';
+import IconButton from '@mui/material/IconButton';
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import IconButton from '@mui/material/IconButton';
+
+//* Firebase imports *//
+import AlertBar from "../Firebase/Firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { auth, db } from "../Firebase/Firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+//* Other imports *//
+import dayjs from "dayjs";
 import Booking, { OpenBooking } from './Booking/Booking';
 
-import { collection, query, where, getDocs, getDoc, doc, updateDoc, addDoc  } from "firebase/firestore";
+//* CSS imports *//
+import "./Calendar.css";
 
-import { auth, db, logout } from "../Firebase/Firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
 const weekday = require("dayjs/plugin/weekday");
 const weekOfYear = require("dayjs/plugin/weekOfYear");
 
@@ -22,7 +31,6 @@ dayjs.extend(weekOfYear);
 
 
 function Calendar(props) {
-
   let currentMonthDays;
   let previousMonthDays;
   let nextMonthDays;
@@ -31,35 +39,35 @@ function Calendar(props) {
   const TODAY = dayjs().format("YYYY-MM-DD");
   const INITIAL_YEAR = dayjs().format("YYYY");
   const INITIAL_MONTH = dayjs().format("M");
-  const CURRENT_MONTH = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1)).format("MMMM YYYY")
+  const CURRENT_MONTH = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1)).format("MMMM YYYY");
+
   const [user, loading, error] = useAuthState(auth);
   const [selectedMonth, setMonth] = useState(CURRENT_MONTH);
-  const [bz, setBz] = useState("pres");
-
+  const [calendarState, setCalendarState] = useState("pres");
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [backdropOpen, setBackdropOpen] = useState(true);
   const [value, setValue] = useState([null, null]);
-  const [availbleDates, setAvailbleDates] = useState([])
-  // const [calendarDaysElement, setCalendarDaysElement] = useState("");
+  const [availbleDates, setAvailbleDates] = useState([]);
 
   const fetchAvailableDatesData = async () => {
     try {
-      const q = query(collection(db, "available-dates"), where("date", "!=", "")); // TODO fixa så att den hittar rätt dagar.
+      const q = query(collection(db, "available-dates"), where("date", "!=", ""));
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((pDoc) => {
-        setAvailbleDates(prev => [...prev, pDoc.data().date])
+        setBackdropOpen(true);
+        setAvailbleDates(prev => [...prev, pDoc.data().date]);
       });
+
+      setBackdropOpen(false);
   
     } catch (err) {
       console.error(err);
-      // alert("An error occured while fetching user data");
+      setAlertOpen(true);
+
     }
   };
 
   function createCalendar(year = INITIAL_YEAR, month = INITIAL_MONTH) {
-    // const calendarDaysElement = document.getElementById("calendar-days");
-    // removeAllDayElements();
-
-    
-  
     currentMonthDays = createDaysForCurrentMonth(
       year,
       month,
@@ -72,56 +80,24 @@ function Calendar(props) {
   
     const days = [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
       
-    console.log("Created Calendar")
+    // console.log("Created Calendar")
     
-    
+    //* Sant eller falskt, om datumet är ett tillgängligt datum(tillgänliga datum är datum som har lagts till via "Booking.js") *//
     function isValidDay(currDate) {
-      // fetchAvailableDatesData(currDate)
-      let arrValidDays = [];
-    
-      // for (const numDays in validDays) {
-    
-        // const date1 = dayjs(dateFrom)
-        // const date2 = dayjs(dateTo)
-        // const dateDiff = date2.diff(date1, "day")
-        
-        // for (let i=0; i < availbleDates + 1; i++) {
-        //   arrValidDays.push(availbleDates)
-        //   // console.log("daa",availbleDates[i]);
-        //   // console.log("a")
-        // }
-      // }
-      // let getValidDays = await (availbleDates !== undefined ? true : false) 
-      const getValidDays = availbleDates.some(day => day === currDate)
-      // console.log(getValidDays)
-      // if(getValidDays) console.log(getValidDays)
-      // console.log("yaa", availbleDates)
-      // console.log(getValidDays)
-      // return getValidDays
-      // console.log("k",arrValidDays)
-      // if(availbleDates === undefined) break;
-      return getValidDays
-      // if(availbleDates === currDate) return true;
-      // else return false;
+      const getValidDays = availbleDates.some(day => day === currDate);
+      
+      return getValidDays;
     }
 
     return(
       days.map((day) => (
-        <Paper elevation={12} ><li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "test2": ""} `}>
+        <Paper key={day.date} elevation={window.matchMedia("(max-width: 600px)").matches ? 0 : 10} ><li id={day.date} className={`calendar-day ${!day.isCurrentMonth ? "calendar-day--not-current" : ""} ${(day.date === TODAY) ? "calendar-day--today" : ""} ${isValidDay(day.date) ? "bookableDay": ""} `}>
             <span><Typography variant='subtitle1' >{day.dayOfMonth}</Typography></span>
-            {/* <Booking day={day.date} /> */}
             {isValidDay(day.date) &&
-              // <Button id={day.date} onClick={(e) => console.log(typeof e.target.id)}>
-              //   BOKA
-              // </Button>
-              
               <OpenBooking date={day.date} />
-              
             }
-            {/* <button id={day.date} onClick={(e) => console.log(day)} /> */}
-            {/* <button id={day.toString()} onClick={(e) => console.log(day)} /> */}
-            
-          </li></Paper>
+          </li>
+        </Paper>
       ))
     )
   };
@@ -193,91 +169,69 @@ function Calendar(props) {
     });
   }
 
-
   function setPrevMonth() {
     setMonth(dayjs(selectedMonth).subtract(1, "month").format("MMMM YYYY"));
-    setBz("prev")
-    // createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
+    setCalendarState("prev");
   }
 
   function setPresMonth() {
     setMonth(dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1)).format("MMMM YYYY"));
-    setBz("pres")
-    // createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
+    setCalendarState("pres");
   }
 
   function setNextMonth() {
     setMonth(dayjs(selectedMonth).add(1, "month").format("MMMM YYYY"));
-    setBz("next")
-    // createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
+    setCalendarState("next");
   }
 
-  function aa() {
-    if (bz === "prev") {
+  //* Flyttar sig mellan alla olika månadern i kalendern *//
+  function handleCalendar() {
+    if(calendarState === "prev") {
       return createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
     } 
-    else if (bz === "pres") {
+    else if(calendarState === "pres") {
       return createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
     } 
-    else if (bz === "next") {
+    else if(calendarState === "next") {
       return createCalendar(dayjs(selectedMonth).format("YYYY"), dayjs(selectedMonth).format("M"));
     }
   }
 
   useEffect(() => {
-    fetchAvailableDatesData()
+    fetchAvailableDatesData();
   }, []);
     return (
         <Paper elevation={12} className="calendar-month">
-
           <section className="calendar-month-header">
             <Typography variant='h5' id="selected-month" className="calendar-month-header-selected-month">
                 {selectedMonth}
             </Typography>
-
             {user && props.editMode ? 
               (<Booking value={value} setValue={setValue} />) : null
             }
-            
-
-
             <section className="calendar-month-header-selectors">
               <IconButton id="previous-month-selector" onClick={() => setPrevMonth()}><ChevronLeftIcon /></IconButton>
               <IconButton id="present-month-selector" onClick={() => setPresMonth()}><KeyboardArrowDownIcon /></IconButton>
               <IconButton id="next-month-selector" onClick={() => setNextMonth()}><ChevronRightIcon /></IconButton>
             </section>
-
           </section>
-        
           <ol id="days-of-week" className="day-of-week">
             {WEEKDAYS.map((weekday) => (
-              <li><Typography variant='h6' >{weekday}</Typography></li>
+              <li key={weekday} ><Typography variant='h6' >{weekday}</Typography></li>
             ))} 
           </ol>
-        
           <ol id="calendar-days" className="days-grid">
-            {aa()}
+            {handleCalendar()}
           </ol>
-          
+
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={backdropOpen}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <AlertBar message={"An error occured while fetching data"} open={alertOpen} setOpen={setAlertOpen} />
         </Paper>
 )};
-
-
-
-
-
-
-const validDays = {
-  1: {
-    dateFrom: "2021-11-13",
-    dateTo: "2021-11-16",
-    numOfSpots: 10,
-
-  }
-}
-
-
-
-// export isValidDay();
 
 export default Calendar;

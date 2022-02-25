@@ -71,6 +71,7 @@ body {
     height: 100%;
     position: relative;
     grid-column-gap: var(--grid-gap);
+    border-color: black;
     grid-row-gap: var(--grid-gap);
     border-top: solid 1px var(--grey-200);
   }
@@ -78,6 +79,9 @@ body {
   .calendar-day {
     position: relative;
     min-height: 100px;
+    /* height: 47px; */
+    /* max-width: 37px; */
+    /* min-width: 37px; */
     font-size: 16px;
     background-color: #fff;
     color: var(--grey-800);
@@ -106,12 +110,24 @@ body {
   .calendar-day--today > span {
     color: #fff;
     border-radius: 9999px;
-    background-color: #1e88e5;
+    background-color: #3a3a3a;
   }
 
-  .test {
-    color: red;
-  }
-  .test2 {
+  .bookableDay {
     color: #006eff;
   }
+
+  
+@media only screen and (max-width: 600px){
+  .days-grid {
+    grid-column-gap: 0;
+    grid-row-gap: 0;
+  }
+
+  .calendar-day {
+    height: 47px;
+    /* max-width: 37px; */
+    border: 1px solid #474747;
+  }
+
+}
